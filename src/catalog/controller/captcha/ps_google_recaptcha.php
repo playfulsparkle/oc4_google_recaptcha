@@ -35,6 +35,8 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      */
     public function validate(): string
     {
+        unset($this->session->data['ps_google_recaptcha_counter']);
+
         if (!isset($this->request->post['g-recaptcha-response'])) {
             return $this->language->get('error_captcha');
         }
@@ -89,6 +91,13 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
+        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
+            $this->session->data['ps_google_recaptcha_counter'] = 0;
+        } else {
+            $this->session->data['ps_google_recaptcha_counter']++;
+        }
+
+        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
         $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 

@@ -41,13 +41,21 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             'replace' => <<<HTML
                 <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge=bottomleft" async defer></script>
                 <script>
-                    function onFormRegisterSubmit(token) {
-                        var form = document.querySelector('#form-register');
-                        var event = new Event('submit', { bubbles: true, cancelable: true });
-                        if (form.dispatchEvent(event)) { form.submit(); }
+                    var form = document.currentScript ? document.currentScript.closest('form') : null;
+
+                    function onFormSubmit{{ widget_counter }}(token) {
+                        if (form) {
+                            var submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+
+                            if (form.dispatchEvent(submitEvent)) {
+                                form.submit();
+                            }
+                        } else {
+                            console.error("No form element found for the current script.");
+                        }
                     }
                 </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-callback="onFormRegisterSubmit" data-action="submit"
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit"
             HTML
         ];
 
