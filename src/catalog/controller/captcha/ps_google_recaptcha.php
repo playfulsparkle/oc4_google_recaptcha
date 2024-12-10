@@ -12,6 +12,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      */
     public function index(): string
     {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return '';
+        }
+
         $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
         $data = [];

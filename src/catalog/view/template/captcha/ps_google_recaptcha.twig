@@ -1,6 +1,6 @@
 <div class="row mb-3 required">
 	<label for="input-google-recaptcha" class="col-sm-2 col-form-label">
-		{% if key_type == 'v2_checkbox' or (key_type == 'v2_invisible' and badge_position == 'inline') %}
+		{% if key_type == 'v2_checkbox' %}
 			{{ entry_challange_captcha }}
 		{% else %}
 			{{ entry_score_based_captcha }}

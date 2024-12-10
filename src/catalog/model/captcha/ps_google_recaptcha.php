@@ -39,7 +39,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views[] = [
             'search' => '<button type="submit" class="btn btn-primary"',
             'replace' => <<<HTML
-                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge={{ badge_position }}" async defer></script>
+                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}{% if badge_position != 'inline' %}&badge={{ badge_position }}{% endif %}" async defer></script>
                 <script>
                     var form = document.currentScript ? document.currentScript.closest('form') : null;
 
@@ -55,7 +55,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
                         }
                     }
                 </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit"
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
             HTML
         ];
 
@@ -87,7 +87,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             $views[] = [
                 'search' => '<button type="submit" class="btn btn-primary"',
                 'replace' => <<<HTML
-                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge={{ badge_position }}" async defer></script>
+                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}{% if badge_position != 'inline' %}&badge={{ badge_position }}{% endif %}" async defer></script>
                 <script>
                     var form = document.currentScript ? document.currentScript.closest('form') : null;
 
@@ -103,7 +103,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
                         }
                     }
                 </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
                 HTML
             ];
         } else if ($args['key_type'] == 'v2_checkbox') {
