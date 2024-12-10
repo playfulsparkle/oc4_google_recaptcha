@@ -16,6 +16,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $data = [];
 
+        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
+            $this->session->data['ps_google_recaptcha_counter'] = 0;
+        } else {
+            $this->session->data['ps_google_recaptcha_counter']++;
+        }
+
+        $data['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+        $data['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+        $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', $data);
 
     }
@@ -42,7 +52,13 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         }
 
         if (isset($recaptcha['error-codes'])) {
-            return $this->language->get('error_' . str_replace('-', '_', $recaptcha['error-codes']));
+            $errors = [];
+
+            foreach ($recaptcha['error-codes'] as $error_code) {
+                $errors[] = $this->language->get('error_' . str_replace('-', '_', $error_code));
+            }
+
+            return implode(', ', $errors);
         } else {
             return $this->language->get('error_captcha');
         }
@@ -67,8 +83,13 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
+        if ($this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3') {
+            return;
+        }
+
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
+        $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountRegisterBefore($args);

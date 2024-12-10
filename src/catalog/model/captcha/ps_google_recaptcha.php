@@ -37,18 +37,18 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views = [];
 
         $views[] = [
-            'search' => '<button type="submit" class="btn btn-primary',
-            'replace' => '
-            <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge=bottomleft"></script>
-            <script>
-            //
-            function onFormRegisterSubmit(token) {
-                var form = document.querySelector(\'#form-register\');
-                var event = new Event(\'submit\', { bubbles: true, cancelable: true });
-                if (form.dispatchEvent(event)) { form.submit(); }
-            }
-            </script>
-            <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-callback="onFormRegisterSubmit" data-action="submit'
+            'search' => '<button type="submit" class="btn btn-primary"',
+            'replace' => <<<HTML
+                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge=bottomleft" async defer></script>
+                <script>
+                    function onFormRegisterSubmit(token) {
+                        var form = document.querySelector('#form-register');
+                        var event = new Event('submit', { bubbles: true, cancelable: true });
+                        if (form.dispatchEvent(event)) { form.submit(); }
+                    }
+                </script>
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-callback="onFormRegisterSubmit" data-action="submit"
+            HTML
         ];
 
         return $views;
