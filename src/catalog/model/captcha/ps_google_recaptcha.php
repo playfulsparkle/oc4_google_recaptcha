@@ -71,7 +71,19 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
     {
         $views = [];
 
-        if ($args['key_type'] === 'v3') {
+        if ($args['key_type'] === 'v3' || $args['key_type'] == 'v2_invisible') {
+            $views[] = [
+                'search' => '<div class="text-end">',
+                'replace' => <<<HTML
+                <div class="mb-3 required">
+                    <label for="input-google-recaptcha" class="col-form-label">{{ ps_entry_score_based_captcha }}</label>
+                    <div id="error-captcha" class="invalid-feedback"></div>
+                </div>
+                <div class="text-end">
+                HTML,
+                'positions' => [2]
+            ];
+
             $views[] = [
                 'search' => '<button type="submit" class="btn btn-primary"',
                 'replace' => <<<HTML
@@ -91,47 +103,45 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
                         }
                     }
                 </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit"
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
                 HTML
             ];
-        } else {
+        } else if ($args['key_type'] == 'v2_checkbox') {
             $views[] = [
                 'search' => '<div class="text-end">',
                 'replace' => <<<HTML
-                <div class="mb-3">
-                    <label for="input-google-recaptcha" class="col-form-label">{{ ps_entry_captcha }}</label>
-                    {% if key_type == 'v2_checkbox' or key_type == 'v2_invisible' %}
-                        <div id="g-recaptcha-{{ widget_counter }}" data-sitekey="{{ site_key }}"></div>
-                        <script type="text/javascript">
-                            var recaptcha_widget{{ widget_counter }};
+                <div class="mb-3 required">
+                    <label for="input-google-recaptcha" class="col-form-label">{{ ps_entry_challange_captcha }}</label>
+                    <div id="g-recaptcha-{{ widget_counter }}" data-sitekey="{{ site_key }}"></div>
+                    <script type="text/javascript">
+                        var recaptcha_widget{{ widget_counter }};
 
-                            var onloadCallback{{ widget_counter }} = function () {
-                                recaptcha_widget{{ widget_counter }} = grecaptcha.render('g-recaptcha-{{ widget_counter }}', {
-                                    'sitekey': '{{ site_key }}',
-                                    'theme': '{{ badge_theme }}',
-                                    'size': '{{ badge_size }}',
-                                });
+                        var onloadCallback{{ widget_counter }} = function () {
+                            recaptcha_widget{{ widget_counter }} = grecaptcha.render('g-recaptcha-{{ widget_counter }}', {
+                                'sitekey': '{{ site_key }}',
+                                'theme': '{{ badge_theme }}',
+                                'size': '{{ badge_size }}'
+                            });
+                        };
+
+                        var form = document.currentScript ? document.currentScript.closest('form') : null;
+
+                        if (typeof form !== 'undefined') {
+                            var resetRecaptcha{{ widget_counter }} = function () {
+                                if (window.grecaptcha && typeof grecaptcha.reset === 'function') {
+                                    grecaptcha.reset(recaptcha_widget{{ widget_counter }});
+                                } else {
+                                    console.warn('Google reCAPTCHA is not initialized.');
+                                }
                             };
 
-                            var form = document.currentScript ? document.currentScript.closest('form') : null;
-
-                            if (typeof form !== 'undefined') {
-                                var resetRecaptcha{{ widget_counter }} = function () {
-                                    if (window.grecaptcha && typeof grecaptcha.reset === 'function') {
-                                        grecaptcha.reset(recaptcha_widget{{ widget_counter }});
-                                    } else {
-                                        console.warn('Google reCAPTCHA is not initialized.');
-                                    }
-                                };
-
-                                form.addEventListener('submit', function () {
-                                    setTimeout(resetRecaptcha{{ widget_counter }}, 1000);
-                                });
-                            }
-                        </script>
-                        <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback{{ widget_counter }}&render=explicit&badge={{ badge_position }}" async defer></script>
-                        {% endif %}
-                        <div id="error-captcha" class="invalid-feedback"></div>
+                            form.addEventListener('submit', function () {
+                                setTimeout(resetRecaptcha{{ widget_counter }}, 1000);
+                            });
+                        }
+                    </script>
+                    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback{{ widget_counter }}&render=explicit&badge={{ badge_position }}" async defer></script>
+                    <div id="error-captcha" class="invalid-feedback"></div>
                 </div>
                 <div class="text-end">
                 HTML,

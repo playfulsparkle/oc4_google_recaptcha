@@ -3,7 +3,8 @@
 $_['text_captcha']                 = 'Captcha';
 
 // Entry
-$_['entry_captcha']                = 'Please complete the captcha validation below';
+$_['entry_challange_captcha']      = 'Please complete the captcha validation below';
+$_['entry_score_based_captcha']    = 'Captcha validation';
 
 // Error
 $_['error_captcha']                = 'Verification is not correct!';

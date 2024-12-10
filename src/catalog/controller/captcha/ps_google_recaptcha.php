@@ -90,7 +90,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
-        if ($this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3') {
+        if (
+            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3' &&
+            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v2_invisible'
+        ) {
             return;
         }
 
@@ -105,6 +108,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
         $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+        $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
