@@ -9,7 +9,8 @@
 			var onloadCallback{{ widget_counter }} = function () {
 				recaptcha_widget{{ widget_counter }} = grecaptcha.render('g-recaptcha-{{ widget_counter }}', {
 					'sitekey': '{{ site_key }}',
-					{% if key_type == 'v2_invisible' %}'size': 'invisible'{% endif %}
+					'theme': '{{ badge_theme }}',
+					'size': '{{ badge_size }}',
 				});
 			};
 
@@ -29,7 +30,7 @@
 				});
 			}
 		</script>
-		<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback{{ widget_counter }}&render=explicit" async defer></script>
+		<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback{{ widget_counter }}&render=explicit&badge={{ badge_position }}" async defer></script>
 		{% endif %}
 		<div id="error-captcha" class="invalid-feedback"></div>
 	</div>

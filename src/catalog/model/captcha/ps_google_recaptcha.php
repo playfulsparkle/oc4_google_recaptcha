@@ -39,7 +39,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views[] = [
             'search' => '<button type="submit" class="btn btn-primary"',
             'replace' => <<<HTML
-                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge=bottomleft" async defer></script>
+                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}&badge={{ badge_position }}" async defer></script>
                 <script>
                     var form = document.currentScript ? document.currentScript.closest('form') : null;
 
@@ -55,7 +55,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
                         }
                     }
                 </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit"
+                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit"
             HTML
         ];
 

@@ -52,13 +52,33 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $data['captcha_ps_google_recaptcha_status'] = $this->config->get('captcha_ps_google_recaptcha_status');
         $data['captcha_ps_google_recaptcha_key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+        $data['captcha_ps_google_recaptcha_badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+        $data['captcha_ps_google_recaptcha_badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        $data['captcha_ps_google_recaptcha_badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
         $data['captcha_ps_google_recaptcha_site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
         $data['captcha_ps_google_recaptcha_secret_key'] = $this->config->get('captcha_ps_google_recaptcha_secret_key');
 
         $data['recaptcha_key_types'] = [
-            'v3' => $this->language->get('entry_key_type_v3'),
-            'v2_checkbox' => $this->language->get('entry_key_type_v2_checkbox'),
-            'v2_invisible' => $this->language->get('entry_key_type_v2_invisible'),
+            'v3' => $this->language->get('text_key_type_v3'),
+            'v2_checkbox' => $this->language->get('text_key_type_v2_checkbox'),
+            'v2_invisible' => $this->language->get('text_key_type_v2_invisible'),
+        ];
+
+        $data['badge_themes'] = [
+            'light' => $this->language->get('text_badge_light'),
+            'dark' => $this->language->get('text_badge_dark'),
+        ];
+
+        $data['badge_positions'] = [
+            'bottomright' => $this->language->get('text_badge_bottom_right'),
+            'bottomleft' => $this->language->get('text_badge_bottom_left'),
+            'inline' => $this->language->get('text_badge_inline'),
+        ];
+
+        $data['badge_sizes'] = [
+            ['disabled' => $this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_invisible', 'value' => 'normal', 'name' => $this->language->get('text_badge_normal'),],
+            ['disabled' => $this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_invisible', 'value' => 'compact', 'name' => $this->language->get('text_badge_compact'),],
+            ['disabled' => $this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_checkbox', 'value' => 'invisible', 'name' => $this->language->get('text_badge_invisible'),],
         ];
 
         $data['text_contact'] = sprintf($this->language->get('text_contact'), self::EXTENSION_EMAIL, self::EXTENSION_EMAIL, self::EXTENSION_DOC);
@@ -95,6 +115,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         if (!$json) {
             $this->load->model('setting/setting');
+
+            if ($this->request->post['captcha_ps_google_recaptcha_key_type'] === 'v3') {
+                $this->request->post['captcha_ps_google_recaptcha_badge_size'] = '';
+            } else  if ($this->request->post['captcha_ps_google_recaptcha_key_type'] === 'v2_checkbox') {
+                $this->request->post['captcha_ps_google_recaptcha_badge_position'] = 'bottomright';
+            }
 
             $this->model_setting_setting->editSetting('captcha_ps_google_recaptcha', $this->request->post);
 
