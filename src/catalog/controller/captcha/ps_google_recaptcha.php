@@ -10,19 +10,11 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     /**
      * @return string
      */
-    public function index($error = []): string
+    public function index(): string
     {
         $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        if (isset($error['captcha'])) {
-            $data['error_captcha'] = $error['captcha'];
-        } else {
-            $data['error_captcha'] = '';
-        }
-
-        $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
-
-        $data['route'] = $this->request->get['route'];
+        $data = [];
 
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', $data);
 
@@ -33,22 +25,26 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      */
     public function validate(): string
     {
-        if (empty($this->session->data['gcapcha'])) {
-            $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+        if (!isset($this->request->post['g-recaptcha-response'])) {
+            return $this->language->get('error_captcha');
+        }
 
-            if (!isset($this->request->post['g-recaptcha-response'])) {
-                return $this->language->get('error_captcha');
-            }
+        $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($this->config->get('captcha_ps_google_recaptcha_secret_key')) . '&response=' . $this->request->post['g-recaptcha-response'] . '&remoteip=' . $this->request->server['REMOTE_ADDR']);
 
-            $recaptcha = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . urlencode($this->config->get('captcha_ps_google_recaptcha_secret')) . '&response=' . $this->request->post['g-recaptcha-response'] . '&remoteip=' . $this->request->server['REMOTE_ADDR']);
+        $recaptcha = (array) json_decode($recaptcha, true);
 
-            $recaptcha = json_decode($recaptcha, true);
+        if (!$recaptcha) {
+            return $this->language->get('error_captcha');
+        }
 
-            if ($recaptcha['success']) {
-                $this->session->data['gcapcha'] = true;
-            } else {
-                return $this->language->get('error_captcha');
-            }
+        if ($recaptcha['success']) {
+            return '';
+        }
+
+        if (isset($recaptcha['error-codes'])) {
+            return $this->language->get('error_' . str_replace('-', '_', $recaptcha['error-codes']));
+        } else {
+            return $this->language->get('error_captcha');
         }
     }
 
@@ -70,14 +66,15 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
         }
-        // echo $route . '<br>';
+
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountRegisterBefore($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
     }
-
 
     /**
      * Retrieves the contents of a template file based on the provided route.
