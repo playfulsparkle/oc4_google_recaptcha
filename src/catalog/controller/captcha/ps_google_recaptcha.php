@@ -38,6 +38,8 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      */
     public function validate(): string
     {
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
         unset($this->session->data['ps_google_recaptcha_counter']);
 
         if (!isset($this->request->post['g-recaptcha-response'])) {
@@ -109,6 +111,56 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountRegisterBefore($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventCatalogViewAccountLoginBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->model('setting/extension');
+
+        $extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+
+        if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('login', (array) $this->config->get('config_captcha_page'))) {
+            $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', 'ps');
+
+            $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+            if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
+                $this->session->data['ps_google_recaptcha_counter'] = 0;
+            } else {
+                $this->session->data['ps_google_recaptcha_counter']++;
+            }
+
+            $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+            $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+            $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+            $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
+            $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+            $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
+            $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountLoginBefore($args);
+
+            $template = $this->replaceViews($route, $template, $headerViews);
+        }
+    }
+
+    public function eventCatalogControllerAccountLoginLoginAfter(string &$route, array &$args, string &$output = null)
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $json_response = json_decode($this->response->getOutput(), true);
+
+        if ($validation_result = $this->validate()) {
+            $json_response['error'] = [];
+            $json_response['error']['captcha'] = $validation_result;
+        }
+
+        $this->response->setOutput(json_encode($json_response));
     }
 
     /**
