@@ -39,23 +39,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views[] = [
             'search' => '<button type="submit" class="btn btn-primary"',
             'replace' => <<<HTML
-                <script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}{% if badge_position != 'inline' %}&badge={{ badge_position }}{% endif %}" async defer></script>
-                <script>
-                    var form = document.currentScript ? document.currentScript.closest('form') : null;
-
-                    function onFormSubmit{{ widget_counter }}(token) {
-                        if (form) {
-                            var submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-
-                            if (form.dispatchEvent(submitEvent)) {
-                                form.submit();
-                            }
-                        } else {
-                            console.error("No form element found for the current script.");
-                        }
-                    }
-                </script>
-                <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
+            <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
             HTML
         ];
 
@@ -106,7 +90,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
                 <button type="submit" class="btn btn-primary g-recaptcha" data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit"
                 HTML
             ];
-        } else if ($args['key_type'] == 'v2_checkbox') {
+        }
+
+        if ($args['key_type'] == 'v2_checkbox') {
             $views[] = [
                 'search' => '<div class="text-end">',
                 'replace' => <<<HTML
