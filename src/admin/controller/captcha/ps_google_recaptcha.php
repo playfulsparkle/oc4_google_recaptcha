@@ -193,18 +193,13 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
         $events = [
-            ['trigger' => 'admin/view/setting/setting/before', 'actionName' => 'eventAdminViewSettingSettingBefore'],
-
             ['trigger' => 'catalog/view/common/header/before', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
 
-            ['trigger' => 'catalog/view/account/login/before', 'actionName' => 'eventCatalogViewAccountLoginBefore'],
-            ['trigger' => 'catalog/controller/account/login' . $separator . 'login/after', 'actionName' => 'eventCatalogControllerAccountLoginLoginAfter'],
-
-            ['trigger' => 'catalog/view/account/register/before', 'actionName' => 'eventCatalogViewAccountRegisterBefore'],
-            ['trigger' => 'catalog/view/account/returns_form/before', 'actionName' => 'eventCatalogViewAccountRegisterBefore'],
-            ['trigger' => 'catalog/view/cms/comment/before', 'actionName' => 'eventCatalogViewAccountRegisterBefore'],
-            ['trigger' => 'catalog/view/information/contact/before', 'actionName' => 'eventCatalogViewAccountRegisterBefore'],
-            ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventCatalogViewAccountRegisterBefore'],
+            ['trigger' => 'catalog/view/account/register/before', 'actionName' => 'eventGeneralV3AndV2Invisible'],
+            ['trigger' => 'catalog/view/account/returns_form/before', 'actionName' => 'eventGeneralV3AndV2Invisible'],
+            ['trigger' => 'catalog/view/cms/comment/before', 'actionName' => 'eventGeneralV3AndV2Invisible'],
+            ['trigger' => 'catalog/view/information/contact/before', 'actionName' => 'eventGeneralV3AndV2Invisible'],
+            ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventGeneralV3AndV2Invisible'],
         ];
 
         $result = 0;
@@ -232,22 +227,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         }
 
         return $result > 0;
-    }
-
-    public function eventAdminViewSettingSettingBefore(string &$route, array &$args, string &$template): void
-    {
-        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
-            return;
-        }
-
-        if (isset($args['config_captcha_page'])) {
-            $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', 'ps');
-
-            $args['captcha_pages'][] = [
-                'text' => $this->language->get('ps_text_login'),
-                'value' => 'login'
-            ];
-        }
     }
 
     /**
