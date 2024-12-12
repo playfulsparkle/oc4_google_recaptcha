@@ -7,6 +7,15 @@ namespace Opencart\Catalog\Controller\Extension\PsGoogleReCaptcha\Captcha;
  */
 class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 {
+    public function __construct(\Opencart\System\Engine\Registry $registry)
+    {
+        $this->registry = $registry;
+
+        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
+            $this->session->data['ps_google_recaptcha_counter'] = 0;
+        }
+    }
+
     /**
      * @return string
      */
@@ -18,13 +27,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $data = [];
+        $this->session->data['ps_google_recaptcha_counter']++;
 
-        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
-            $this->session->data['ps_google_recaptcha_counter'] = 0;
-        } else {
-            $this->session->data['ps_google_recaptcha_counter']++;
-        }
+        $data = [];
 
         $data['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
         $data['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
@@ -36,7 +41,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['route'] = $this->request->get['route'];
 
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', $data);
-
     }
 
     /**
@@ -87,7 +91,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventGeneralV3AndV2Invisible(string &$route, array &$args, string &$template): void
+    public function eventGoogleRecaptchaV3AndV2InivisibleButton(string &$route, array &$args, string &$template): void
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -100,14 +104,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
-        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
-        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
-            $this->session->data['ps_google_recaptcha_counter'] = 0;
-        } else {
-            $this->session->data['ps_google_recaptcha_counter']++;
-        }
-
         $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
         $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
@@ -115,7 +111,37 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGeneralV3AndV2Invisible($args);
+        $args['route'] = $this->request->get['route'];
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGoogleRecaptchaV3AndV2InivisibleButton($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventGoogleRecaptchaV3AndV2InivisibleScript(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        if (
+            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3' &&
+            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v2_invisible'
+        ) {
+            return;
+        }
+
+        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+        $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
+        $args['route'] = $this->request->get['route'];
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGoogleRecaptchaV3AndV2InivisibleScript($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
     }
@@ -179,6 +205,17 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         // Support for OC4 catalog
         $dir_template = DIR_TEMPLATE;
         $template_file = $dir_template . $route . '.twig';
+
+        if (file_exists($template_file) && is_file($template_file)) {
+            $template_file = $this->modCheck($template_file);
+
+            return file_get_contents($template_file);
+        }
+
+        // Support for OC4 extension
+        $firstSlash = strpos($route, '/');
+        $secondSlash = strpos($route, '/', $firstSlash + 1);
+        $template_file = DIR_OPENCART . substr($route, 0, $secondSlash + 1) . 'catalog/view/template/' . substr($route, $secondSlash + 1) . '.twig';
 
         if (file_exists($template_file) && is_file($template_file)) {
             $template_file = $this->modCheck($template_file);
