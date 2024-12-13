@@ -12,12 +12,12 @@
 				};
 
 				var resetRecaptcha{{ widget_counter }} = function () {
-					if (
-						window.grecaptcha &&
-						typeof grecaptcha.reset === 'function' &&
-						typeof recaptcha_widget{{ widget_counter }} === 'number'
-					) {
-						grecaptcha.reset(recaptcha_widget{{ widget_counter }});
+					if (window.grecaptcha && typeof grecaptcha.reset === 'function') {
+						if (typeof recaptcha_widget{{ widget_counter }} === 'number') {
+							grecaptcha.reset(recaptcha_widget{{ widget_counter }});
+						} else {
+							grecaptcha.reset();
+						}
 					}
 				};
 			</script>
@@ -29,6 +29,7 @@
 							if (recaptcha_form{{ widget_counter }}) {
 									var submitEvent = new Event('submit', {bubbles: true, cancelable: true});
 									if (recaptcha_form{{ widget_counter }}.dispatchEvent(submitEvent)) { recaptcha_form{{ widget_counter }}.submit(); }
+									{% if key_type == 'v2_invisible' %}resetRecaptcha{{ widget_counter }}();{% endif %}
 							}
 					}
 			</script>
