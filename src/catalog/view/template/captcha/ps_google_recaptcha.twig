@@ -25,7 +25,8 @@
 			<script src="https://www.google.com/recaptcha/api.js?render={{ site_key }}{% if badge_position == 'inline' %}&onload=repositionCaptchaBadge{{ widget_counter }}{% else %}&badge={{ badge_position }}{% endif %}" async defer></script>
 			<script data-widget-id="{{ widget_counter }}">
 					var recaptcha_form{{ widget_counter }} = document.currentScript ? document.currentScript.closest('form') : null;
-					function onFormSubmit{{ widget_counter }}(token) {
+
+					var onFormSubmit{{ widget_counter }} = function (token) {
 							if (recaptcha_form{{ widget_counter }}) {
 									var submitEvent = new Event('submit', {bubbles: true, cancelable: true});
 									if (recaptcha_form{{ widget_counter }}.dispatchEvent(submitEvent)) { recaptcha_form{{ widget_counter }}.submit(); }
