@@ -40,6 +40,30 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $data['route'] = $this->request->get['route'];
 
+        $query = [];
+
+        if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
+            $query['render'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
+            if ($this->config->get('captcha_ps_google_recaptcha_badge_position') === 'inline') {
+                $query['onload'] = 'repositionCaptchaBadge' . $this->session->data['ps_google_recaptcha_counter'];
+            } else {
+                $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+            }
+        } else if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_checkbox') {
+            $query['render'] = 'explicit';
+            $query['onload'] = 'onloadCallback' . $this->session->data['ps_google_recaptcha_counter'];
+            $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        } else if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_invisible') {
+            if ($this->config->get('captcha_ps_google_recaptcha_badge_position') === 'inline') {
+                $query['onload'] = 'repositionCaptchaBadge' . $this->session->data['ps_google_recaptcha_counter'];
+            } else {
+                $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+            }
+        }
+
+        $data['google_captcha_url'] = 'https://www.google.com/recaptcha/api.js?' . http_build_query($query);
+
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', $data);
     }
 
