@@ -126,6 +126,44 @@
 						</div>
 						<div id="tab-security" class="tab-pane">
 
+							<div class="alert alert-info"><i class="fa-solid fa-circle-exclamation"></i> {{ text_csp_info }}</div>
+
+							<div class="row mb-3">
+								<label for="input-script-nonce" class="col-sm-2 col-form-label">{{ entry_script_nonce }}</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<input type="text" name="captcha_ps_google_recaptcha_script_nonce" value="{{ captcha_ps_google_recaptcha_script_nonce }}" placeholder="{{ entry_script_nonce }}" id="input-script-nonce" class="form-control" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-info btn-copy" data-bs-toggle="tooltip" data-input-id="input-script-nonce" title="{{ help_copy }}"><i class="fa fa-copy"></i></button>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-google-captcha-nonce" class="col-sm-2 col-form-label">{{ entry_google_captcha_nonce }}</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<input type="text" name="captcha_ps_google_recaptcha_google_captcha_nonce" value="{{ captcha_ps_google_recaptcha_google_captcha_nonce }}" placeholder="{{ entry_google_captcha_nonce }}" id="input-google-captcha-nonce" class="form-control" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-info btn-copy" data-bs-toggle="tooltip" data-input-id="input-google-captcha-nonce" title="{{ help_copy }}"><i class="fa fa-copy"></i></button>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<label for="input-css-nonce" class="col-sm-2 col-form-label">{{ entry_css_nonce }}</label>
+								<div class="col-sm-10">
+									<div class="input-group">
+										<input type="text" name="captcha_ps_google_recaptcha_css_nonce" value="{{ captcha_ps_google_recaptcha_css_nonce }}" placeholder="{{ entry_css_nonce }}" id="input-css-nonce" class="form-control" />
+										<span class="input-group-btn">
+											<button type="button" class="btn btn-info btn-copy" data-bs-toggle="tooltip" data-input-id="input-css-nonce" title="{{ help_copy }}"><i class="fa fa-copy"></i></button>
+										</span>
+									</div>
+								</div>
+							</div>
+
 						</div>
 						<div id="tab-support" class="tab-pane">
 
@@ -162,6 +200,16 @@
 	</div>
 </div>
 <script>
+	$('.btn-copy').on('click', function () {
+		var copyText = $("#" + $(this).data('inputId'));
+
+		if (copyText.length) {
+				copyText.select();
+				copyText[0].setSelectionRange(0, 99999);
+				document.execCommand("copy");
+		}
+	});
+
 	$('#input-key-type').on('change', function() {
 		var selectedValue = $(this).val();
 

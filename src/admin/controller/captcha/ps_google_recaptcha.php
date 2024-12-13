@@ -58,6 +58,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_ps_google_recaptcha_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
         $data['captcha_ps_google_recaptcha_site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
         $data['captcha_ps_google_recaptcha_secret_key'] = $this->config->get('captcha_ps_google_recaptcha_secret_key');
+        $data['captcha_ps_google_recaptcha_script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
+        $data['captcha_ps_google_recaptcha_google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $data['captcha_ps_google_recaptcha_css_nonce'] = $this->config->get('captcha_ps_google_recaptcha_css_nonce');
 
         $data['recaptcha_key_types'] = [
             'v3' => $this->language->get('text_key_type_v3'),
@@ -146,6 +149,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             $data = [
                 'captcha_ps_google_recaptcha_key_type' => 'v3',
+                'captcha_ps_google_recaptcha_script_nonce' => $this->generateGuid(),
+                'captcha_ps_google_recaptcha_google_captcha_nonce' => $this->generateGuid(),
+                'captcha_ps_google_recaptcha_css_nonce' => $this->generateGuid(),
             ];
 
             $this->model_setting_setting->editSetting('captcha_ps_google_recaptcha', $data);
@@ -163,6 +169,17 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             $this->_unregisterEvents();
         }
+    }
+
+    public function generateGuid(): string {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000, // Version 4
+            mt_rand(0, 0x3fff) | 0x8000, // Variant 10
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+        );
     }
 
     public function fixEventHandler(): void

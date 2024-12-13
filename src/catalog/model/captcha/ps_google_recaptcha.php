@@ -18,7 +18,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
 
         $views[] = [
             'search' => '</head>',
-            'replace' => '{% if ps_hide_badge %}<style>.grecaptcha-badge { visibility: hidden; }</style>{% endif %}
+            'replace' => '{% if ps_hide_badge %}<style{% if ps_css_nonce %} nonce="{{ ps_css_nonce }}"{% endif %}>.grecaptcha-badge { visibility: hidden; }</style>{% endif %}
             </head>'
         ];
 
