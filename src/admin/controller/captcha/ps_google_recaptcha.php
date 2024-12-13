@@ -123,7 +123,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 $this->request->post['captcha_ps_google_recaptcha_badge_position'] = 'bottomright';
             }
 
-            if ($this->request->post['captcha_ps_google_recaptcha_key_type'] !== 'v3') {
+            if (
+                $this->request->post['captcha_ps_google_recaptcha_key_type'] !== 'v3' &&
+                $this->request->post['captcha_ps_google_recaptcha_key_type'] !== 'v2_invisible'
+            ) {
                 $this->request->post['captcha_ps_google_recaptcha_hide_badge'] = 0;
             }
 
