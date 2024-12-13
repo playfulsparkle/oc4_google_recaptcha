@@ -3,7 +3,7 @@
 $_['heading_title']               = 'Playful Sparkle - Google reCAPTCHA';
 $_['heading_fix']                 = 'Fix common bugs';
 $_['heading_getting_started']     = 'Getting Started';
-$_['heading_setup']               = 'Setting Up Live Search';
+$_['heading_setup']               = 'Setting Up Google reCAPTCHA';
 $_['heading_troubleshot']         = 'Common Troubleshooting';
 $_['heading_faq']                 = 'FAQ';
 $_['heading_contact']             = 'Contact Support';
