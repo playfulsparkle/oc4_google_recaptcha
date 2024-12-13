@@ -97,13 +97,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
-        if (
-            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3' &&
-            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v2_invisible'
-        ) {
-            return;
-        }
-
         $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
         $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
