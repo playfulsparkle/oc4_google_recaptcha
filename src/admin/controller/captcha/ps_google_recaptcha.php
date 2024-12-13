@@ -55,6 +55,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_ps_google_recaptcha_badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
         $data['captcha_ps_google_recaptcha_badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $data['captcha_ps_google_recaptcha_badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
+        $data['captcha_ps_google_recaptcha_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
         $data['captcha_ps_google_recaptcha_site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
         $data['captcha_ps_google_recaptcha_secret_key'] = $this->config->get('captcha_ps_google_recaptcha_secret_key');
 
@@ -120,6 +121,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 $this->request->post['captcha_ps_google_recaptcha_badge_size'] = '';
             } else if ($this->request->post['captcha_ps_google_recaptcha_key_type'] === 'v2_checkbox') {
                 $this->request->post['captcha_ps_google_recaptcha_badge_position'] = 'bottomright';
+            }
+
+            if ($this->request->post['captcha_ps_google_recaptcha_key_type'] !== 'v3') {
+                $this->request->post['captcha_ps_google_recaptcha_hide_badge'] = 0;
             }
 
             $this->model_setting_setting->editSetting('captcha_ps_google_recaptcha', $this->request->post);
