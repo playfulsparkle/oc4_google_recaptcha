@@ -18,10 +18,34 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
 
         $views[] = [
             'search' => '</head>',
+            'replace' => '{% if ps_hide_badge %}<style>.grecaptcha-badge { visibility: hidden; }</style>{% endif %}
+            </head>'
+        ];
+
+        $views[] = [
+            'search' => '</head>',
             'replace' => '
             <link rel="preconnect" href="https://www.google.com">
             <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
             </head>'
+        ];
+
+        return $views;
+    }
+
+    /**
+     * @param array $args
+     *
+     * @return array
+     */
+    public function replaceCatalogViewCommonFooterBefore(array $args): array
+    {
+        $views = [];
+
+        $views[] = [
+            'search' => '<p>{{ powered }}</p>',
+            'replace' => '<p>{{ powered }}</p>
+                {% if ps_hide_badge %}<p>{{ ps_text_recaptcha_branding }}</p>{% endif %}'
         ];
 
         return $views;

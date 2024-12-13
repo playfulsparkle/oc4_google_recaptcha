@@ -108,9 +108,30 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
+        $args['ps_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
+
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonHeaderBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventCatalogViewCommonFooterBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $args['ps_text_recaptcha_branding'] = $this->language->get('text_recaptcha_branding');
+
+        $args['ps_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonFooterBefore($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
     }
