@@ -202,7 +202,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['trigger' => 'catalog/view/information/contact/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
             ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
 
-            ['trigger' => 'catalog/view/extension/ps_google_recaptcha/captcha/ps_google_recaptcha/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleScript'],
+            ['trigger' => 'catalog/view/checkout/register/before', 'actionName' => 'eventCatalogViewCheckoutRegisterBefore'],
         ];
 
         $result = 0;

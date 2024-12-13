@@ -120,28 +120,15 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventGoogleRecaptchaV3AndV2InivisibleScript(string &$route, array &$args, string &$template): void
+    public function eventCatalogViewCheckoutRegisterBefore(string &$route, array &$args, string &$template): void
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
         }
 
-        if (
-            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v3' &&
-            $this->config->get('captcha_ps_google_recaptcha_key_type') !== 'v2_invisible'
-        ) {
-            return;
-        }
-
-        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
-        $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
-        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
-
-        $args['route'] = $this->request->get['route'];
-
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGoogleRecaptchaV3AndV2InivisibleScript($args);
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCheckoutRegisterBefore($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
     }
