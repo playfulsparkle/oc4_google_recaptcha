@@ -53,6 +53,7 @@ $_['entry_css_nonce']             = 'Nonce štýlu CSS značky';
 $_['button_fix_event_handler']    = 'Opraviť spracovateľa udalostí';
 
 // Help
+$_['help_copy']                   = 'Skopírovať URL';
 $_['help_key_type']               = 'Vyberte typ reCAPTCHA pre tento site key. Site key funguje iba s jedným typom reCAPTCHA. Viac informácií nájdete na stránke <a href="https://developers.google.com/recaptcha/docs/versions" target="_blank" rel="noopener noreferrer">Typy stránok</a>.';
 $_['help_hide_badge']             = 'Povolením tejto možnosti môžete úplne skryť Google reCAPTCHA nálepku. Oznámenie bude automaticky pridané do päty každej stránky, aby bola splnená smernica spoločnosti Google. Viac informácií nájdete v sekcii <a href="https://developers.google.com/recaptcha/docs/faq#id-like-to-hide-the-recaptcha-badge.-what-is-allowed" target="_blank" rel="noopener noreferrer">Chcem skryť reCAPTCHA nálepku. Čo je povolené?</a> na stránke FAQ Google reCAPTCHA.';
 $_['help_site_key']               = 'Použite tento site key v HTML kóde, ktorý vaša stránka poskytuje používateľom.';
