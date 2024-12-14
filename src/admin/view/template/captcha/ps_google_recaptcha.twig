@@ -28,6 +28,7 @@
 					<ul class="nav nav-tabs">
 						<li class="nav-item"><a href="#tab-general" data-bs-toggle="tab" class="nav-link active">{{ tab_general }}</a></li>
 						<li class="nav-item"><a href="#tab-security" data-bs-toggle="tab" class="nav-link">{{ tab_security }}</a></li>
+						<li class="nav-item"><a href="#tab-error-log" data-bs-toggle="tab" class="nav-link">{{ tab_error_log }}</a></li>
 						<li class="nav-item"><a href="#tab-support" data-bs-toggle="tab" class="nav-link">{{ tab_help_and_support }}</a></li>
 					</ul>
 
@@ -140,6 +141,16 @@
 								</div>
 							</div>
 
+							<div class="row mb-3">
+								<label for="input-send-client-ip" class="col-sm-2 col-form-label">{{ entry_send_client_ip }}</label>
+								<div class="col-sm-10">
+									<div class="form-check form-switch form-switch-lg">
+										<input type="hidden" name="captcha_ps_google_recaptcha_send_client_ip" value="0" />
+										<input type="checkbox" name="captcha_ps_google_recaptcha_send_client_ip" value="1" id="input-send-client-ip" class="form-check-input" {% if captcha_ps_google_recaptcha_send_client_ip %} checked{% endif %} />
+									</div>
+								</div>
+							</div>
+
 						</div>
 						<div id="tab-security" class="tab-pane">
 
@@ -182,6 +193,39 @@
 							</div>
 
 						</div>
+						<div id="tab-error-log" class="tab-pane">
+
+							<div class="row mb-3">
+								<label for="input-error-log-status" class="col-sm-2 col-form-label">{{ entry_enable_error_log }}</label>
+								<div class="col-sm-10">
+									<div class="form-check form-switch form-switch-lg">
+										<input type="hidden" name="captcha_ps_google_recaptcha_error_log_status" value="0" />
+										<input type="checkbox" name="captcha_ps_google_recaptcha_error_log_status" value="1" id="input-error-log-status" class="form-check-input" {% if captcha_ps_google_recaptcha_error_log_status %} checked{% endif %} />
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3 required">
+								<label for="input-log-filename" class="col-sm-2 col-form-label">{{ entry_log_filename }}</label>
+								<div class="col-sm-10">
+									<input type="text" name="captcha_ps_google_recaptcha_log_filename" value="{{ captcha_ps_google_recaptcha_log_filename }}" placeholder="{{ entry_log_filename }}" id="input-log-filename" class="form-control" />
+									<div id="error-input-log-filename" class="invalid-feedback"></div>
+									<div class="form-text">{{ help_log_filename }}</div>
+								</div>
+							</div>
+
+							<textarea name="log" wrap="off" rows="15" id="input-error-log" class="form-control" readonly>{{ error_log_output }}</textarea>
+              <br/>
+              <div class="row row-cols-2">
+                <div class="col">
+                  <a href="{{ error_log_download }}" class="btn btn-primary w-100"><i class="fa-solid fa-download"></i> {{ button_download }}</a>
+                </div>
+                <div class="col">
+                  <button type="button" value="{{ error_log_clear }}" data-input-id="input-error-log" class="btn btn-danger w-100 btn-clear-error-log"><i class="fa-solid fa-eraser"></i> {{ button_clear }}</button>
+                </div>
+              </div>
+
+						</div>
 						<div id="tab-support" class="tab-pane">
 
 							<h3>{{ heading_getting_started }}</h3>
@@ -217,6 +261,39 @@
 	</div>
 </div>
 <script>
+	$('.btn-clear-error-log').on('click', function () {
+		var element = this;
+
+		if (confirm('{{ text_confirm }}')) {
+			$.ajax({
+				url: $(element).attr('value'),
+				dataType: 'json',
+				beforeSend: function () {
+					$(element).button('loading');
+				},
+				complete: function () {
+					$(element).button('reset');
+				},
+				success: function (json) {
+					$('.alert-dismissible').remove();
+
+					if (json['error']) {
+						$('#alert').prepend('<div class="alert alert-danger alert-dismissible"><i class="fa-solid fa-circle-exclamation"></i> ' + json['error'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+					}
+
+					if (json['success']) {
+						$('#alert').prepend('<div class="alert alert-success alert-dismissible"><i class="fa-solid fa-check-circle"></i> ' + json['success'] + ' <button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+
+						$('#' + $(element).attr('data-input-id')).val('');
+					}
+				},
+				error: function (xhr, ajaxOptions, thrownError) {
+					console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	});
+
 	$('.btn-reset').on('click', function () {
 		$("#" + $(this).data('inputId')).val('0.5');
 	});
