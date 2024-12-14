@@ -26,6 +26,14 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->document->setTitle($this->language->get('heading_title'));
 
+        if (isset($this->session->data['error'])) {
+            $data['error_warning'] = $this->session->data['error'];
+
+            unset($this->session->data['error']);
+        } else {
+            $data['error_warning'] = '';
+        }
+
         $data['breadcrumbs'] = [];
 
         $data['breadcrumbs'][] = [
@@ -245,13 +253,13 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         if (!is_file($error_log_filename)) {
             $this->session->data['error'] = sprintf($this->language->get('error_error_log_file'), $this->config->get('captcha_ps_google_recaptcha_log_filename'));
 
-            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=captcha', true));
+            $this->response->redirect($this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', 'user_token=' . $this->session->data['user_token']));
         }
 
         if (!filesize($error_log_filename)) {
             $this->session->data['error'] = sprintf($this->language->get('error_error_log_empty'), $this->config->get('captcha_ps_google_recaptcha_log_filename'));
 
-            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=captcha', true));
+            $this->response->redirect($this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha', 'user_token=' . $this->session->data['user_token']));
         }
 
         $this->response->addheader('Pragma: public');
