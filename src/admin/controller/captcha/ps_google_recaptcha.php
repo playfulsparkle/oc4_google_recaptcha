@@ -61,6 +61,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_ps_google_recaptcha_script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
         $data['captcha_ps_google_recaptcha_google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
         $data['captcha_ps_google_recaptcha_css_nonce'] = $this->config->get('captcha_ps_google_recaptcha_css_nonce');
+        $data['captcha_ps_google_recaptcha_v3_score_threshold'] = (array) $this->config->get('captcha_ps_google_recaptcha_v3_score_threshold');
 
         $data['recaptcha_key_types'] = [
             'v3' => $this->language->get('text_key_type_v3'),
@@ -87,35 +88,35 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $data['captcha_pages'] = [];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_register'),
-			'value' => 'register'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_register'),
+            'value' => 'register'
+        ];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_guest'),
-			'value' => 'guest'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_guest'),
+            'value' => 'guest'
+        ];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_review'),
-			'value' => 'review'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_review'),
+            'value' => 'review'
+        ];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_comment'),
-			'value' => 'comment'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_comment'),
+            'value' => 'comment'
+        ];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_return'),
-			'value' => 'returns'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_return'),
+            'value' => 'returns'
+        ];
 
-		$data['captcha_pages'][] = [
-			'text'  => $this->language->get('text_v3_score_threshold_contact'),
-			'value' => 'contact'
-		];
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_v3_score_threshold_contact'),
+            'value' => 'contact'
+        ];
 
         $data['text_contact'] = sprintf($this->language->get('text_contact'), self::EXTENSION_EMAIL, self::EXTENSION_EMAIL, self::EXTENSION_DOC);
 
@@ -146,6 +147,14 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             if (!$this->request->post['captcha_ps_google_recaptcha_secret_key']) {
                 $json['error']['input-secret-key'] = $this->language->get('error_secret_key');
+            }
+
+            if (isset($this->request->post['captcha_ps_google_recaptcha_v3_score_threshold'])) {
+                foreach ($this->request->post['captcha_ps_google_recaptcha_v3_score_threshold'] as $captcha_page => $value) {
+                    if ($value < 0 || $value > 1) {
+                        $json['error']['input-v3-score-threshold-' . $captcha_page] = $this->language->get('error_v3_score_threshold_value');
+                    }
+                }
             }
         }
 
