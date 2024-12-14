@@ -95,6 +95,20 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             (array) json_decode($recaptcha_response, true)
         );
 
+        if ($this->request->get['route'] === 'product/review.write') {
+            $recaptcha_page = 'review';
+        } else if ($this->request->get['route'] === 'information/contact.send') {
+            $recaptcha_page = 'contact';
+        } else if ($this->request->get['route'] === 'account/returns.save') {
+            $recaptcha_page = 'returns';
+        } else if ($this->request->get['route'] === 'checkout/register.save') {
+            $recaptcha_page = 'register';
+        } else if ($this->request->get['route'] === 'account/register.register') {
+            $recaptcha_page = 'register';
+        } else {
+            $recaptcha_page = '';
+        }
+
         if ($recaptcha['success']) {
             return '';
         }
