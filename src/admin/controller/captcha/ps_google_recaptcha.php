@@ -85,6 +85,38 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['disabled' => $this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_checkbox', 'value' => 'invisible', 'name' => $this->language->get('text_badge_invisible'),],
         ];
 
+        $data['captcha_pages'] = [];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_register'),
+			'value' => 'register'
+		];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_guest'),
+			'value' => 'guest'
+		];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_review'),
+			'value' => 'review'
+		];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_comment'),
+			'value' => 'comment'
+		];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_return'),
+			'value' => 'returns'
+		];
+
+		$data['captcha_pages'][] = [
+			'text'  => $this->language->get('text_v3_score_threshold_contact'),
+			'value' => 'contact'
+		];
+
         $data['text_contact'] = sprintf($this->language->get('text_contact'), self::EXTENSION_EMAIL, self::EXTENSION_EMAIL, self::EXTENSION_DOC);
 
         $data['header'] = $this->load->controller('common/header');

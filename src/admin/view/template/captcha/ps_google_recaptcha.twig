@@ -5,11 +5,12 @@
 		<div class="container-fluid">
 			<div class="float-end">
 				<button type="submit" form="form-captcha" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"><i class="fa-solid fa-save"></i></button>
-				<a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a></div>
+				<a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light"><i class="fa-solid fa-reply"></i></a>
+			</div>
 			<h1>{{ heading_title }}</h1>
 			<ol class="breadcrumb">
 				{% for breadcrumb in breadcrumbs %}
-					<li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+				<li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
 				{% endfor %}
 			</ol>
 		</div>
@@ -37,8 +38,8 @@
 								<label class="col-sm-2 col-form-label">{{ entry_status }}</label>
 								<div class="col-sm-10">
 									<div class="form-check form-switch form-switch-lg">
-										<input type="hidden" name="captcha_ps_google_recaptcha_status" value="0"/>
-										<input type="checkbox" name="captcha_ps_google_recaptcha_status" value="1" id="input-status" class="form-check-input"{% if captcha_ps_google_recaptcha_status %} checked{% endif %}/>
+										<input type="hidden" name="captcha_ps_google_recaptcha_status" value="0" />
+										<input type="checkbox" name="captcha_ps_google_recaptcha_status" value="1" id="input-status" class="form-check-input" {% if captcha_ps_google_recaptcha_status %} checked{% endif %} />
 									</div>
 								</div>
 							</div>
@@ -48,60 +49,70 @@
 								<div class="col-sm-10">
 									<select name="captcha_ps_google_recaptcha_key_type" id="input-key-type" class="form-select">
 										{% for key_type, name in recaptcha_key_types %}
-										<option value="{{ key_type }}"{% if captcha_ps_google_recaptcha_key_type == key_type %} selected{% endif %}>{{ name }}</option>
+										<option value="{{ key_type }}" {% if captcha_ps_google_recaptcha_key_type==key_type %} selected{% endif %}>{{ name }}</option>
 										{% endfor %}
 									</select>
 									<div class="form-text">{{ help_key_type }}</div>
 								</div>
 							</div>
 
-							<div id="badge-positions" class="row mb-3"{% if captcha_ps_google_recaptcha_key_type == 'v2_checkbox' %} style="display: none;"{% endif %}>
+							<fieldset id="v3-score-threshold" class="p-3 mb-3" {% if captcha_ps_google_recaptcha_key_type !='v3' %} style="display: none;" {% endif %}>
+								<legend>{{ heading_v3_score_threshold }}</legend>
+								{% for captcha_page in captcha_pages %}
+								<div class="row mb-3 required">
+									<label for="input-v3-score-threshold-{{ captcha_page.value }}" class="col-sm-2 col-form-label">{{ captcha_page.text }}</label>
+									<div class="col-sm-10">
+										<input type="number" step="0.1" min="0" max="1" name="captcha_ps_google_recaptcha_v3_score_threshold[{{ captcha_page.value }}]" value="{{ captcha_ps_google_recaptcha_v3_score_threshold[captcha_page.value] | default('0.5') }}" placeholder="{{ captcha_page.text }}" id="input-v3-score-threshold-{{ captcha_page.value }}" class="form-control" />
+									</div>
+								</div>
+								{% endfor %}
+								<div class="offset-2 form-text">{{ help_v3_score_threshold }}</div>
+							</fieldset>
+
+							<div id="hide-badge" class="row mb-3" {% if captcha_ps_google_recaptcha_key_type !='v3' and captcha_ps_google_recaptcha_key_type !='v2_invisible' %} style="display: none;" {% endif %}>
+								<label for="input-hide-badge" class="col-sm-2 col-form-label">{{ entry_hide_badge }}</label>
+								<div class="col-sm-10">
+									<div class="form-check form-switch form-switch-lg">
+										<input type="hidden" name="captcha_ps_google_recaptcha_hide_badge" value="0" />
+										<input type="checkbox" name="captcha_ps_google_recaptcha_hide_badge" value="1" id="input-hide-badge" class="form-check-input" {% if captcha_ps_google_recaptcha_hide_badge %} checked{% endif %} />
+									</div>
+									<div class="form-text">{{ help_hide_badge }}</div>
+								</div>
+							</div>
+
+							<div id="badge-positions" class="row mb-3" {% if captcha_ps_google_recaptcha_key_type=='v2_checkbox' %} style="display: none;" {% endif %}>
 								<label for="input-badge-position" class="col-sm-2 col-form-label">{{ entry_badge_position }}</label>
 								<div class="col-sm-10">
 									<select name="captcha_ps_google_recaptcha_badge_position" id="input-badge-position" class="form-select">
 										{% for value, name in badge_positions %}
-										<option value="{{ value }}"{% if captcha_ps_google_recaptcha_badge_position == value %} selected{% endif %}>{{ name }}</option>
+										<option value="{{ value }}" {% if captcha_ps_google_recaptcha_badge_position==value %} selected{% endif %}>{{ name }}</option>
 										{% endfor %}
 									</select>
 									<div class="form-text">{{ help_badge_position }}</div>
 								</div>
 							</div>
 
-							<div id="badge-themes" class="row mb-3"{%
-								if (captcha_ps_google_recaptcha_key_type == 'v3' and captcha_ps_google_recaptcha_badge_position != 'inline') or
-								(captcha_ps_google_recaptcha_key_type == 'v2_invisible' and captcha_ps_google_recaptcha_badge_position != 'inline')
-								%} style="display: none;"{% endif %}>
+							<div id="badge-themes" class="row mb-3" {% if (captcha_ps_google_recaptcha_key_type=='v3' and captcha_ps_google_recaptcha_badge_position !='inline' ) or (captcha_ps_google_recaptcha_key_type=='v2_invisible' and captcha_ps_google_recaptcha_badge_position !='inline' ) %} style="display: none;" {% endif %}>
 								<label for="input-badge-theme" class="col-sm-2 col-form-label">{{ entry_badge_theme }}</label>
 								<div class="col-sm-10">
 									<select name="captcha_ps_google_recaptcha_badge_theme" id="input-badge-theme" class="form-select">
 										{% for value, name in badge_themes %}
-										<option value="{{ value }}"{% if captcha_ps_google_recaptcha_badge_theme == value %} selected{% endif %}>{{ name }}</option>
+										<option value="{{ value }}" {% if captcha_ps_google_recaptcha_badge_theme==value %} selected{% endif %}>{{ name }}</option>
 										{% endfor %}
 									</select>
 									<div class="form-text">{{ help_badge_theme }}</div>
 								</div>
 							</div>
 
-							<div id="badge-sizes" class="row mb-3"{% if captcha_ps_google_recaptcha_key_type == 'v3' %} style="display: none;"{% endif %}>
+							<div id="badge-sizes" class="row mb-3" {% if captcha_ps_google_recaptcha_key_type=='v3' %} style="display: none;" {% endif %}>
 								<label for="input-badge-size" class="col-sm-2 col-form-label">{{ entry_badge_size }}</label>
 								<div class="col-sm-10">
 									<select name="captcha_ps_google_recaptcha_badge_size" id="input-badge-size" class="form-select">
 										{% for badge_size in badge_sizes %}
-										<option value="{{ badge_size.value }}" data-value="{{ badge_size.value }}"{% if badge_size.disabled %} disabled{% endif %}{% if captcha_ps_google_recaptcha_badge_size == badge_size.value %} selected{% endif %}>{{ badge_size.name }}</option>
+										<option value="{{ badge_size.value }}" data-value="{{ badge_size.value }}" {% if badge_size.disabled %} disabled{% endif %}{% if captcha_ps_google_recaptcha_badge_size==badge_size.value %} selected{% endif %}>{{ badge_size.name }}</option>
 										{% endfor %}
 									</select>
 									<div class="form-text">{{ help_badge_size }}</div>
-								</div>
-							</div>
-
-							<div id="hide-badge" class="row mb-3"{% if captcha_ps_google_recaptcha_key_type != 'v3' and captcha_ps_google_recaptcha_key_type != 'v2_invisible' %} style="display: none;"{% endif %}>
-								<label for="input-hide-badge" class="col-sm-2 col-form-label">{{ entry_hide_badge }}</label>
-								<div class="col-sm-10">
-									<div class="form-check form-switch form-switch-lg">
-										<input type="hidden" name="captcha_ps_google_recaptcha_hide_badge" value="0"/>
-										<input type="checkbox" name="captcha_ps_google_recaptcha_hide_badge" value="1" id="input-hide-badge" class="form-check-input"{% if captcha_ps_google_recaptcha_hide_badge %} checked{% endif %}/>
-									</div>
-									<div class="form-text">{{ help_hide_badge }}</div>
 								</div>
 							</div>
 
@@ -204,24 +215,29 @@
 		var copyText = $("#" + $(this).data('inputId'));
 
 		if (copyText.length) {
-				copyText.select();
-				copyText[0].setSelectionRange(0, 99999);
-				document.execCommand("copy");
+			copyText.select();
+			copyText[0].setSelectionRange(0, 99999);
+			document.execCommand("copy");
 		}
 	});
 
-	$('#input-key-type').on('change', function() {
+	$('#input-key-type').on('change', function () {
 		var selectedValue = $(this).val();
 
 		$('#badge-themes').hide();
 		$('#badge-positions').hide();
 		$('#badge-sizes').hide();
 		$('#hide-badge').hide();
+		$('#v3-score-threshold').hide();
 
 		$('#input-badge-position').prop('selectedIndex', 0);
 		$('#input-badge-theme').prop('selectedIndex', 0);
 		$('#input-badge-size option').prop('disabled', true).prop('selected', false);
 		$('#input-hide-badge').prop('checked', false);
+
+		if (selectedValue === 'v3') {
+			$('#v3-score-threshold').show();
+		}
 
 		if (selectedValue === 'v3' || selectedValue === 'v2_invisible') {
 			$('#hide-badge').show();
@@ -245,7 +261,7 @@
 		}
 	});
 
-	$('#input-badge-position').on('change', function() {
+	$('#input-badge-position').on('change', function () {
 		var selectedValue = $(this).val();
 
 		$('#input-badge-theme').prop('selectedIndex', 0);
@@ -257,7 +273,7 @@
 		}
 	});
 
-	$('button[data-fix-action]').on('click', function() {
+	$('button[data-fix-action]').on('click', function () {
 		var $this = $(this);
 		var action = $(this).data('fix-action');
 
