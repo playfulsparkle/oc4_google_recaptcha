@@ -28,7 +28,7 @@
 						if (recaptcha_form{{ widget_counter }}) {
 								var submitEvent = new Event('submit', {bubbles: true, cancelable: true});
 								if (recaptcha_form{{ widget_counter }}.dispatchEvent(submitEvent)) { recaptcha_form{{ widget_counter }}.submit(); }
-								{% if key_type == 'v2_invisible' %}resetRecaptcha{{ widget_counter }}();{% endif %}
+								resetRecaptcha{{ widget_counter }}();
 						}
 				}
 			{% elseif key_type == 'v2_checkbox' %}
