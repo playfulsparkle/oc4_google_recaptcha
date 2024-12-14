@@ -171,14 +171,18 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         }
     }
 
-    public function generateGuid(): string {
+    public function generateGuid(): string
+    {
         return sprintf(
             '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
             mt_rand(0, 0xffff),
             mt_rand(0, 0x0fff) | 0x4000, // Version 4
             mt_rand(0, 0x3fff) | 0x8000, // Variant 10
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
         );
     }
 

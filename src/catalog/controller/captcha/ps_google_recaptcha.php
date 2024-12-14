@@ -32,6 +32,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data = [];
 
         $data['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+
         $data['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $data['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
         $data['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
@@ -39,8 +40,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
         $data['ps_script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
         $data['ps_google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
-
-        $data['route'] = $this->request->get['route'];
 
         $query = [];
 
@@ -155,13 +154,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         }
 
         $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+
         $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
         $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
         $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
-
-        $args['route'] = $this->request->get['route'];
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
