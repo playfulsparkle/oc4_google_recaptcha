@@ -105,8 +105,19 @@ HTML;
 
         $views[] = [ // OpenCart 4 does not reset button state because of Google reCAPTCHA script!
             'search' => "$('#button-register').button('reset');",
-            'replace' => "$('#button-register').button('reset');
-                $('#button-register').prop('disabled', false);"
+            'replace' => "$('#button-register').button('reset').prop('disabled', false);"
+        ];
+
+        return $views;
+    }
+
+    public function replaceCatalogViewProductReviewBefore(array $args): array
+    {
+        $views = [];
+
+        $views[] = [ // OpenCart 4 does not reset button state because of Google reCAPTCHA script!
+            'search' => "$('#button-review').button('reset');",
+            'replace' => "$('#button-review').button('reset').prop('disabled', false);"
         ];
 
         return $views;

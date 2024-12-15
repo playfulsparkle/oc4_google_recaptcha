@@ -250,6 +250,19 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
+    public function eventCatalogViewProductReviewBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewProductReviewBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
     /**
      * Retrieves the contents of a template file based on the provided route.
      *

@@ -365,6 +365,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
 
             ['trigger' => 'catalog/view/checkout/register/before', 'actionName' => 'eventCatalogViewCheckoutRegisterBefore'],
+            ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventCatalogViewProductReviewBefore'],
         ];
 
         $result = 0;
