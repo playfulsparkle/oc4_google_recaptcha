@@ -66,7 +66,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views = [];
 
         $button_tpl = <<<HTML
- {% if key_type == 'v3' or key_type == 'v2_invisible' %}data-sitekey="{{ site_key }}" data-theme="{{ badge_theme }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit{% endif %}"
+ {% if badge_position == 'inline' %} data-theme="{{ badge_theme }}"{% endif %}{% if key_type == 'v3' or key_type == 'v2_invisible' %}data-sitekey="{{ site_key }}" data-callback="onFormSubmit{{ widget_counter }}" data-badge="{{ badge_position }}"{% if key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %} data-action="submit{% endif %}"
 HTML;
 
         $views[] = [
