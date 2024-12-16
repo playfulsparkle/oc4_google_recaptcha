@@ -354,18 +354,18 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
         $events = [
-            ['trigger' => 'catalog/view/common/header/before', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
-            ['trigger' => 'catalog/view/common/footer/before', 'actionName' => 'eventCatalogViewCommonFooterBefore'],
+            ['trigger' => 'catalog/view/common/header/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
+            ['trigger' => 'catalog/view/common/footer/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonFooterBefore'],
 
             // v3 and 2_invisible
-            ['trigger' => 'catalog/view/account/register/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
-            ['trigger' => 'catalog/view/account/returns_form/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
-            ['trigger' => 'catalog/view/checkout/register/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
-            ['trigger' => 'catalog/view/information/contact/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
-            ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/account/register/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/account/returns_form/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/checkout/register/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/information/contact/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/product/review/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
 
-            ['trigger' => 'catalog/view/checkout/register/before', 'actionName' => 'eventCatalogViewCheckoutRegisterBefore'],
-            ['trigger' => 'catalog/view/product/review/before', 'actionName' => 'eventCatalogViewProductReviewBefore'],
+            ['trigger' => 'catalog/view/checkout/register/before', 'description' => '', 'actionName' => 'eventCatalogViewCheckoutRegisterBefore'],
+            ['trigger' => 'catalog/view/product/review/before', 'description' => '', 'actionName' => 'eventCatalogViewProductReviewBefore'],
         ];
 
         $result = 0;
@@ -374,7 +374,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             foreach ($events as $event) {
                 $result += $this->model_setting_event->addEvent([
                     'code' => 'captcha_ps_google_recaptcha',
-                    'description' => '',
+                    'description' => $event['description'],
                     'trigger' => $event['trigger'],
                     'action' => 'extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . $event['actionName'],
                     'status' => '1',
@@ -385,7 +385,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             foreach ($events as $event) {
                 $result += $this->model_setting_event->addEvent(
                     'captcha_ps_google_recaptcha',
-                    '',
+                    $event['description'],
                     $event['trigger'],
                     'extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . $event['actionName']
                 );
