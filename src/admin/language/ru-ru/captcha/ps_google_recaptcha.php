@@ -37,7 +37,8 @@ $_['text_v3_score_threshold_review']   = 'Отзывы';
 $_['text_v3_score_threshold_comment']  = 'Комментарий';
 $_['text_v3_score_threshold_return']   = 'Возвраты';
 $_['text_v3_score_threshold_contact']  = 'Контакт';
-$_['text_log_clear_success']     = 'Журнал ошибок успешно очищен.';
+$_['text_default']                     = '(по умолчанию)';
+$_['text_log_clear_success']           = 'Журнал ошибок успешно очищен.';
 
 // Tab
 $_['tab_general']                      = 'Основные';

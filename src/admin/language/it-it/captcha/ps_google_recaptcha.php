@@ -37,7 +37,8 @@ $_['text_v3_score_threshold_review']   = 'Recensioni';
 $_['text_v3_score_threshold_comment']  = 'Commento';
 $_['text_v3_score_threshold_return']   = 'Resi';
 $_['text_v3_score_threshold_contact']  = 'Contatto';
-$_['text_log_clear_success']     = 'Il registro degli errori è stato cancellato con successo.';
+$_['text_default']                     = '(predefinito)';
+$_['text_log_clear_success']           = 'Il registro degli errori è stato cancellato con successo.';
 
 // Tab
 $_['tab_general']                      = 'Generale';

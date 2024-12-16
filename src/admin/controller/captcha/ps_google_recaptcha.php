@@ -75,18 +75,18 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_ps_google_recaptcha_v3_score_threshold'] = (array) $this->config->get('captcha_ps_google_recaptcha_v3_score_threshold');
 
         $data['recaptcha_key_types'] = [
-            'v3' => $this->language->get('text_key_type_v3'),
-            'v2_checkbox' => $this->language->get('text_key_type_v2_checkbox'),
+            'v2_checkbox' => $this->language->get('text_key_type_v2_checkbox') . ' ' . $this->language->get('text_default'),
             'v2_invisible' => $this->language->get('text_key_type_v2_invisible'),
+            'v3' => $this->language->get('text_key_type_v3'),
         ];
 
         $data['badge_themes'] = [
-            'light' => $this->language->get('text_badge_light'),
+            'light' => $this->language->get('text_badge_light') . ' ' . $this->language->get('text_default'),
             'dark' => $this->language->get('text_badge_dark'),
         ];
 
         $data['badge_positions'] = [
-            'bottomright' => $this->language->get('text_badge_bottom_right'),
+            'bottomright' => $this->language->get('text_badge_bottom_right') . ' ' . $this->language->get('text_default'),
             'bottomleft' => $this->language->get('text_badge_bottom_left'),
             'inline' => $this->language->get('text_badge_inline'),
         ];
@@ -220,10 +220,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             $this->load->model('setting/setting');
 
             $data = [
-                'captcha_ps_google_recaptcha_key_type' => 'v3',
+                'captcha_ps_google_recaptcha_key_type' => 'v2_checkbox',
                 'captcha_ps_google_recaptcha_script_nonce' => $this->generateGuid(),
                 'captcha_ps_google_recaptcha_google_captcha_nonce' => $this->generateGuid(),
                 'captcha_ps_google_recaptcha_css_nonce' => $this->generateGuid(),
+                'captcha_ps_google_recaptcha_badge_theme' => 'light',
+                'captcha_ps_google_recaptcha_badge_position' => 'bottomright',
                 'captcha_ps_google_recaptcha_log_filename' => 'ps_google_recaptcha.log',
             ];
 
