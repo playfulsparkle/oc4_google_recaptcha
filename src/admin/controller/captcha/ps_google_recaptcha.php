@@ -216,7 +216,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
     public function install(): void
     {
-        if ($this->user->hasPermission('modify', 'extension/ps_google_recaptcha/captcha/ps_google_recaptcha')) {
+        if ($this->user->hasPermission('modify', 'extension/captcha')) {
             $this->load->model('setting/setting');
 
             $data = [
@@ -237,7 +237,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
     public function uninstall(): void
     {
-        if ($this->user->hasPermission('modify', 'extension/ps_google_recaptcha/captcha/ps_google_recaptcha')) {
+        if ($this->user->hasPermission('modify', 'extension/captcha')) {
             $this->load->model('setting/event');
 
             $this->_unregisterEvents();
