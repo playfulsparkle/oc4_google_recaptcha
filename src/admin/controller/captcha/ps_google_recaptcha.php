@@ -363,9 +363,11 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['trigger' => 'catalog/view/checkout/register/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
             ['trigger' => 'catalog/view/information/contact/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
             ['trigger' => 'catalog/view/product/review/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
+            ['trigger' => 'catalog/view/cms/comment/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
 
             ['trigger' => 'catalog/view/checkout/register/before', 'description' => '', 'actionName' => 'eventCatalogViewCheckoutRegisterBefore'],
             ['trigger' => 'catalog/view/product/review/before', 'description' => '', 'actionName' => 'eventCatalogViewProductReviewBefore'],
+            ['trigger' => 'catalog/view/cms/comment/before', 'description' => '', 'actionName' => 'eventCatalogViewCmsCommentBefore'],
         ];
 
         $result = 0;

@@ -96,6 +96,47 @@ HTML;
             'replace' => '<button type="submit" id="button-review" class="btn btn-primary g-recaptcha"' . $button_tpl . '>{{ button_continue }}</button>'
         ];
 
+        $views[] = [
+            'search' => '<button type="submit" id="button-comment" form="form-comment" class="btn btn-primary">{{ button_comment }}</button>',
+            'replace' => '<button type="submit" id="button-comment" form="form-comment" class="btn btn-primary g-recaptcha"' . $button_tpl . '>{{ button_comment }}</button>'
+        ];
+
+        return $views;
+    }
+
+    public function replaceCatalogViewCmsCommentBefore(array $args): array
+    {
+        $views = [];
+
+        $views[] = [
+            'search' => '<form id="form-comment" action="" data-oc-target="" data-oc-trigger="">',
+            'replace' => ''
+        ];
+
+        $views[] = [
+            'search' => '<div id="modal-comment" class="modal">',
+            'replace' => '<div id="modal-comment" class="modal">
+            <form id="form-comment" action="" data-oc-target="" data-oc-trigger="">'
+        ];
+
+        $views[] = [
+            'search' => '</form>',
+            'replace' => ''
+        ];
+
+        $views[] = [
+            'search' => '</div>
+<script type="text/javascript">',
+            'replace' => '</form>
+            </div>
+<script type="text/javascript">'
+        ];
+
+        $views[] = [ // OpenCart 4 does not reset button state because of Google reCAPTCHA script!
+            'search' => "$('#button-comment').button('reset');",
+            'replace' => "$('#button-comment').button('reset').prop('disabled', false);"
+        ];
+
         return $views;
     }
 
