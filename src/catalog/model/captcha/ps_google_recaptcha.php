@@ -19,7 +19,11 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views[] = [
             'search' => '</head>',
             'replace' => '<style{% if ps_css_nonce %} nonce="{{ ps_css_nonce }}"{% endif %}>
-            {% if ps_hide_badge %}.grecaptcha-badge { visibility: hidden; }{% endif %}
+            {% if ps_hide_badge %}
+            .grecaptcha-badge { visibility: hidden; }
+            .row .col-sm-10 .grecaptcha-badge { visibility: visible; }
+            #content { padding-bottom: 340px; }
+            {% endif %}
             .text-end > div:has(.grecaptcha-badge) {
                 display: inline-block;
             }
@@ -66,7 +70,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
         $views = [];
 
         $button_tpl = <<<HTML
- {% if badge_position == 'inline' %} data-theme="{{ badge_theme }}"{% else %} data-badge="{{ badge_position }}"{% endif %}
+ {% if badge_position == 'inline' %} data-theme="{{ badge_theme }}"{% endif %} data-badge="{{ badge_position }}"
  {% if key_type == 'v2_checkbox' or key_type == 'v2_invisible' %} data-size="{{ badge_size }}"{% endif %}
  {% if key_type == 'v3' or key_type == 'v2_invisible' %}data-sitekey="{{ site_key }}" data-callback="onFormSubmit{{ widget_counter }}" data-action="submit{% endif %}"
 HTML;
