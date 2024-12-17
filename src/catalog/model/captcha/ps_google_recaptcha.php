@@ -23,7 +23,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             .grecaptcha-badge { visibility: hidden; }
             .row .col-sm-10 .grecaptcha-badge { visibility: visible; }
             {% endif %}
-            .text-end > div:has(.grecaptcha-badge) {
+            .text-end > div:has(> iframe) {
                 display: inline-block;
             }
             </style>
