@@ -13,25 +13,36 @@ the required branding is visibly included in the user flow.
 
 Features
 
-- Real-time Autocomplete Suggestions: Displays instant, real-time search
-  suggestions as customers type, making it faster and easier for users to
-  find products.
-- Customizable Search Results: Administrators can enable or disable specific
-  suggestion categories like products, offering full control over the
-  search experience.
-- Adjustable Product Descriptions: Customize the length and display of product
-  descriptions in the search results, allowing for a clean and informative
-  layout tailored to your preferences.
-- Image Display Customization: Choose whether to display product images in the
-  search results and control their visibility and size, offering a visually
-  appealing user experience.
-- Enhanced User Experience: With an intuitive search interface and customizable
-  display options, customers can find exactly what they’re looking for quickly
-  and easily, leading to a better shopping experience.
+- Comprehensive reCAPTCHA Options:
+  - Support for reCAPTCHA v3 (score-based): Validate user actions in the
+    background without user intervention.
+  - Support for reCAPTCHA v2 (checkbox): Displays the "I'm not a robot"
+    checkbox challenge.
+  - Support for reCAPTCHA v2 Invisible: Validates actions in the background with
+    minimal user interruption.
+- Customizable Display Settings:
+  - For v3:
+    - Badge position: Choose between bottom left, bottom right, or inline.
+    - Theme: Select between light and dark.
+    - Option to hide the badge with a footer notice to comply with
+      Google policy.
+    - Set different score thresholds for specific pages, such as Register,
+      Guest Checkout, Reviews, Comment, Returns, and Contact.
+  - For v2 Checkbox:
+    - Badge theme: Choose between light and dark.
+    - Badge size: Select normal or compact.
+  - For v2 Invisible:
+    - Badge position: Choose between bottom left, bottom right, or inline.
+    - Theme: Select between light and dark.
+    - Option to hide the badge with a footer notice to comply with
+      Google policy.
+- Advanced Features:
+  - Logs any reCAPTCHA verification failures for debugging and
+    monitoring purposes.
+  - Toggle option to include the client's IP address when sending verification
+    requests to Google's reCAPTCHA service.
 - Compatibility: Integrates smoothly with OpenCart 4.x+, supporting a range of
   online store setups.
-- Multi-store Support: Supports multi-store setups by default, making it easy to
-  integrate across multiple OpenCart stores.
 - Multilingual Support: Ready for international use with languages including
   Čeština (cs-cz), Deutsch (de-de), English (GB) (en-gb), English (US) (en-us),
   Español (es-es), Français (fr-fr), Magyar (hu-hu), Italiano (it-it),
@@ -53,6 +64,17 @@ Installation Instructions
 7. Locate the extension in the Modules list and click the Install button.
 8. Click the Edit button, configure the extension parameters, and click the Save
    button to save your settings.
+
+Important Notice
+
+This extension has been thoroughly tested with the default OpenCart template.
+If you are using a custom template, please note that reCAPTCHA v3 (score-based)
+and reCAPTCHA v2 Invisible may not work as expected. However,
+reCAPTCHA v2 (checkbox) should work as intended.
+
+If you encounter any issues with v3 or v2 Invisible on your custom template,
+please contact us, and we will be happy to assist you in updating the extension
+to ensure full compatibility.
 
 Support & Inquiries
 
