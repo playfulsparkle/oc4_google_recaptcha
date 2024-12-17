@@ -105,13 +105,24 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             $post_data['remoteip'] = $this->request->server['REMOTE_ADDR'];
         }
 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+        } else if (ini_get('allow_url_fopen')) {
+            $context = stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                    'content' => http_build_query($post_data)
+                ]
+            ]);
+            $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+        }
 
         $captcha_response = array_merge(
             [
@@ -122,7 +133,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 'hostname' => '',     // the hostname of the site where the reCAPTCHA was solved
                 'error-codes' => []   // optional
             ],
-            (array) json_decode($response, true)
+            (array) json_decode((string) $response, true)
         );
 
         if (JSON_ERROR_NONE !== $json_last_error = json_last_error()) {
