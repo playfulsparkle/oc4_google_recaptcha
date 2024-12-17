@@ -21,7 +21,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             'replace' => '<style{% if ps_css_nonce %} nonce="{{ ps_css_nonce }}"{% endif %}>
             {% if ps_hide_badge %}
             .grecaptcha-badge { visibility: hidden; }
-            .row .col-sm-10 .grecaptcha-badge { visibility: visible; }
+            .row .grecaptcha-badge { visibility: visible; }
             {% endif %}
             .text-end > div:has(> iframe) {
                 display: inline-block;
