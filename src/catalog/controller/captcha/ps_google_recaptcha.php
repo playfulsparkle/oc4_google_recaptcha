@@ -38,8 +38,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
         $data['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
-        $data['ps_script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
-        $data['ps_google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $data['script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
+        $data['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $data['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
 
         $query = [];
 
@@ -197,25 +198,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonHeaderBefore($args);
-
-        $template = $this->replaceViews($route, $template, $headerViews);
-    }
-
-    public function eventCatalogViewCommonFooterBefore(string &$route, array &$args, string &$template): void
-    {
-        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
-            return;
-        }
-
-        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
-        $args['ps_text_recaptcha_branding'] = $this->language->get('text_recaptcha_branding');
-
-        $args['ps_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
-
-        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonFooterBefore($args);
 
         $template = $this->replaceViews($route, $template, $headerViews);
     }

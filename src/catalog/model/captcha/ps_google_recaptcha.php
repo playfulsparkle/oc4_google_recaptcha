@@ -22,7 +22,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             {% if ps_hide_badge %}
             .grecaptcha-badge { visibility: hidden; }
             .row .col-sm-10 .grecaptcha-badge { visibility: visible; }
-            #content { padding-bottom: 340px; }
             {% endif %}
             .text-end > div:has(.grecaptcha-badge) {
                 display: inline-block;
@@ -37,24 +36,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
             <link rel="preconnect" href="https://www.google.com">
             <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
             </head>'
-        ];
-
-        return $views;
-    }
-
-    /**
-     * @param array $args
-     *
-     * @return array
-     */
-    public function replaceCatalogViewCommonFooterBefore(array $args): array
-    {
-        $views = [];
-
-        $views[] = [
-            'search' => '<p>{{ powered }}</p>',
-            'replace' => '<p>{{ powered }}</p>
-                {% if ps_hide_badge %}<p>{{ ps_text_recaptcha_branding }}</p>{% endif %}'
         ];
 
         return $views;

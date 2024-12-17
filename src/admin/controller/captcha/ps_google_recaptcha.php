@@ -357,7 +357,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $events = [
             ['trigger' => 'catalog/view/common/header/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
-            ['trigger' => 'catalog/view/common/footer/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonFooterBefore'],
 
             // v3 and 2_invisible
             ['trigger' => 'catalog/view/account/register/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
