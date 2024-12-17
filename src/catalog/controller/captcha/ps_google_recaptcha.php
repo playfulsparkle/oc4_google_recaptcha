@@ -42,6 +42,8 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
         $data['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
 
+        $data['checkout_page'] = substr($this->request->get['route'], 0, 9) === 'checkout/';
+
         $query = [];
 
         if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
