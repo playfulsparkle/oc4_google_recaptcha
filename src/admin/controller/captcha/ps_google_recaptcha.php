@@ -504,6 +504,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
+        if (!in_array('admin_login', (array) $this->config->get('config_captcha_page'))) {
+            return;
+        }
+
         $json = json_decode($this->response->getOutput(), true);
 
         $log_status = (bool) $this->config->get('captcha_ps_google_recaptcha_error_log_status') && !empty($this->config->get('captcha_ps_google_recaptcha_log_filename'));
