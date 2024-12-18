@@ -424,33 +424,26 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         return $result > 0;
     }
 
-    #region Admin login
-    public function eventAdminViewCommonLoginBefore(string &$route, array &$args, string &$template): void
+    public function render_captcha()
     {
-        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
-            return;
-        }
-
-        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
-        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
         if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
             $this->session->data['ps_google_recaptcha_counter'] = 0;
         } else {
             $this->session->data['ps_google_recaptcha_counter']++;
         }
 
-        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+        $data = [];
 
-        $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
-        $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
-        $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
-        $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
-        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
-        $args['script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
-        $args['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
-        $args['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
+        $data['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+
+        $data['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+        $data['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+        $data['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
+        $data['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+        $data['script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
+        $data['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $data['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
 
         $query = [];
 
@@ -476,7 +469,25 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $query['hl'] = $this->language->get('code');
 
-        $args['google_captcha_url'] = 'https://www.google.com/recaptcha/api.js?' . http_build_query($query);
+        $data['google_captcha_url'] = 'https://www.google.com/recaptcha/api.js?' . http_build_query($query);
+
+        return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha_widget', $data);
+    }
+
+    #region Admin login
+    public function eventAdminViewCommonLoginBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
+
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $args['captcha'] = $this->load->controller('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'render_captcha');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonLoginBefore($args);
 
@@ -491,7 +502,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $json = json_decode($this->response->getOutput(), true);
 
-		$log_status = (bool) $this->config->get('captcha_ps_google_recaptcha_error_log_status') && !empty($this->config->get('captcha_ps_google_recaptcha_log_filename'));
+        $log_status = (bool) $this->config->get('captcha_ps_google_recaptcha_error_log_status') && !empty($this->config->get('captcha_ps_google_recaptcha_log_filename'));
 
         if ($log_status) {
             $log = new \Opencart\System\Library\Log($this->config->get('captcha_ps_google_recaptcha_log_filename'));
