@@ -521,7 +521,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                     ', User-Agent: ' . $this->request->server['HTTP_USER_AGENT']);
             }
 
-            $json['error'] = $this->language->get('error_missing_input_response');
+            $this->session->data['error'] = $this->language->get('error_missing_input_response');
+
+            $json['redirect'] = $this->url->link('common/login', '', true);
 
             return $this->response->setOutput(json_encode($json));
         }
@@ -564,7 +566,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 $log->write('JSON Error: ' . json_last_error_msg() . ' (Code: ' . $json_last_error . ')');
             }
 
-            $json['error'] = $this->language->get('error_bad_request');
+            $this->session->data['error'] = $this->language->get('error_bad_request');
+
+            $json['redirect'] = $this->url->link('common/login', '', true);
 
             return $this->response->setOutput(json_encode($json));
         }
@@ -597,7 +601,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                         ', IP: ' . $this->request->server['REMOTE_ADDR']);
                 }
 
-                $json['error'] = $this->language->get('error_invalid_input_response');
+                $this->session->data['error'] = $this->language->get('error_invalid_input_response');
+
+                $json['redirect'] = $this->url->link('common/login', '', true);
 
                 return $this->response->setOutput(json_encode($json));
             }
@@ -616,7 +622,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 }
             }
 
-            $json['error'] = implode(', ', $errors);
+            $this->session->data['error'] = implode(', ', $errors);
+
+            $json['redirect'] = $this->url->link('common/login', '', true);
 
             return $this->response->setOutput(json_encode($json));
         }
@@ -625,7 +633,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             $log->write('reCAPTCHA Error: ' . $this->language->get('error_captcha') . ', IP: ' . $this->request->server['REMOTE_ADDR']);
         }
 
-        $json['error'] = $this->language->get('error_bad_request');
+        $this->session->data['error'] = $this->language->get('error_bad_request');
+
+        $json['redirect'] = $this->url->link('common/login', '', true);
 
         $this->response->setOutput(json_encode($json));
     }
