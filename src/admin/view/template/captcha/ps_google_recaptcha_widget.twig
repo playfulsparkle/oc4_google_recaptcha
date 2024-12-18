@@ -51,11 +51,4 @@
 			<div id="error-captcha" class="invalid-feedback"></div>
 	</div>
 </div>
-{% if hide_badge %}
-<div class="mb-3">
-	<div class="mb-2">
-			<p>{{ text_recaptcha_branding }}</p>
-	</div>
-</div>
-{% endif %}
 <script{% if google_captcha_nonce %} nonce="{{ google_captcha_nonce }}"{% endif %} src="{{ google_captcha_url }}" async defer></script>
