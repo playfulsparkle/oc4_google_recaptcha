@@ -100,32 +100,47 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_pages'] = [];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_register'),
+            'text' => $this->language->get('text_admin_login'),
+            'value' => 'admin_login'
+        ];
+
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_catalog_login'),
+            'value' => 'catalog_login'
+        ];
+
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_register'),
             'value' => 'register'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_guest'),
+            'text' => $this->language->get('text_forgotten_password'),
+            'value' => 'forgotten_password'
+        ];
+
+        $data['captcha_pages'][] = [
+            'text' => $this->language->get('text_guest'),
             'value' => 'guest'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_review'),
+            'text' => $this->language->get('text_review'),
             'value' => 'review'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_comment'),
+            'text' => $this->language->get('text_comment'),
             'value' => 'comment'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_return'),
+            'text' => $this->language->get('text_return'),
             'value' => 'returns'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_v3_score_threshold_contact'),
+            'text' => $this->language->get('text_contact'),
             'value' => 'contact'
         ];
 
@@ -356,6 +371,8 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
         $events = [
+            ['trigger' => 'admin/view/setting/setting/before', 'description' => '', 'actionName' => 'eventAdminViewSettingSettingBefore'],
+
             ['trigger' => 'catalog/view/common/header/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
 
             // v3 and 2_invisible
@@ -396,6 +413,25 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         }
 
         return $result > 0;
+    }
+
+    public function eventAdminViewSettingSettingBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $args['text_admin_login'] = $this->language->get('text_admin_login');
+        $args['text_catalog_login'] = $this->language->get('text_catalog_login');
+        $args['text_forgotten_password'] = $this->language->get('text_forgotten_password');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewSettingSettingBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
     }
 
     /**
