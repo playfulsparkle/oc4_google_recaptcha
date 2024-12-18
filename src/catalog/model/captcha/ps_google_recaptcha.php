@@ -148,4 +148,19 @@ HTML;
 
         return $views;
     }
+
+    public function replaceCatalogViewAccountLoginBefore(array $args): array
+    {
+        $views = [];
+
+        $views[] = [
+            'search' => '<div class="text-end">',
+            'replace' => '
+            {{ captcha }}
+            <div class="text-end">',
+            'positions' => [2]
+        ];
+
+        return $views;
+    }
 }

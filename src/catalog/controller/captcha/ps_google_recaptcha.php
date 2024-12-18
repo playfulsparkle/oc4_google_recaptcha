@@ -192,6 +192,53 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         return $this->language->get('error_bad_request');
     }
 
+    public function eventCatalogViewAccountLoginBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        // Captcha
+        $this->load->model('setting/extension');
+
+        $extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+
+        if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('catalog_login', (array) $this->config->get('config_captcha_page'))) {
+            $args['captcha'] = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code']);
+        } else {
+            $args['captcha'] = '';
+        }
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountLoginBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventCatalogControllerAccountLoginLoginAfter(string &$route, array &$args, string &$output = null)
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $json = json_decode($this->response->getOutput(), true);
+
+		$this->load->model('setting/extension');
+
+		$extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+
+		if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('catalog_login', (array)$this->config->get('config_captcha_page'))) {
+			$captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
+
+			if ($captcha) {
+				$json['error']['captcha'] = $captcha;
+			}
+		}
+
+        $this->response->setOutput(json_encode($json));
+    }
+
     public function eventCatalogViewCommonHeaderBefore(string &$route, array &$args, string &$template): void
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
