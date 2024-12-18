@@ -521,6 +521,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                     ', User-Agent: ' . $this->request->server['HTTP_USER_AGENT']);
             }
 
+            if ($this->user->isLogged()) {
+                $this->user->logout();
+
+                unset($this->session->data['user_token']);
+            }
+
             $this->session->data['error'] = $this->language->get('error_missing_input_response');
 
             $json['redirect'] = $this->url->link('common/login', '', true);
@@ -566,6 +572,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 $log->write('JSON Error: ' . json_last_error_msg() . ' (Code: ' . $json_last_error . ')');
             }
 
+            if ($this->user->isLogged()) {
+                $this->user->logout();
+
+                unset($this->session->data['user_token']);
+            }
+
             $this->session->data['error'] = $this->language->get('error_bad_request');
 
             $json['redirect'] = $this->url->link('common/login', '', true);
@@ -601,6 +613,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                         ', IP: ' . $this->request->server['REMOTE_ADDR']);
                 }
 
+                if ($this->user->isLogged()) {
+                    $this->user->logout();
+
+                    unset($this->session->data['user_token']);
+                }
+
                 $this->session->data['error'] = $this->language->get('error_invalid_input_response');
 
                 $json['redirect'] = $this->url->link('common/login', '', true);
@@ -622,6 +640,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 }
             }
 
+            if ($this->user->isLogged()) {
+                $this->user->logout();
+
+                unset($this->session->data['user_token']);
+            }
+
             $this->session->data['error'] = implode(', ', $errors);
 
             $json['redirect'] = $this->url->link('common/login', '', true);
@@ -631,6 +655,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         if ($log_status) {
             $log->write('reCAPTCHA Error: ' . $this->language->get('error_captcha') . ', IP: ' . $this->request->server['REMOTE_ADDR']);
+        }
+
+        if ($this->user->isLogged()) {
+            $this->user->logout();
+
+            unset($this->session->data['user_token']);
         }
 
         $this->session->data['error'] = $this->language->get('error_bad_request');
