@@ -481,6 +481,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return;
         }
 
+        if (!in_array('admin_login', (array) $this->config->get('config_captcha_page'))) {
+            return;
+        }
+
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
         $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
