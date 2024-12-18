@@ -375,6 +375,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             ['trigger' => 'catalog/view/common/header/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
 
+            ['trigger' => 'admin/view/common/login/before', 'description' => '', 'actionName' => 'eventAdminViewCommonLoginBefore'],
+            ['trigger' => 'admin/controller/common/login' . $separator . 'login/after', 'description' => '', 'actionName' => 'eventAdminControllerCommonLoginLoginAfter'],
+
             ['trigger' => 'catalog/view/account/login/before', 'description' => '', 'actionName' => 'eventCatalogViewAccountLoginBefore'],
             ['trigger' => 'catalog/controller/account/login' . $separator . 'login/after', 'description' => '', 'actionName' => 'eventCatalogControllerAccountLoginLoginAfter'],
 
@@ -420,6 +423,198 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         return $result > 0;
     }
+
+    #region Admin login
+    public function eventAdminViewCommonLoginBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        if (!isset($this->session->data['ps_google_recaptcha_counter'])) {
+            $this->session->data['ps_google_recaptcha_counter'] = 0;
+        } else {
+            $this->session->data['ps_google_recaptcha_counter']++;
+        }
+
+        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+
+        $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+        $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+        $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
+        $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+        $args['script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
+        $args['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $args['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
+
+        $query = [];
+
+        if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
+            $query['render'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
+            if ($this->config->get('captcha_ps_google_recaptcha_badge_position') === 'inline') {
+                $query['onload'] = 'repositionCaptchaBadge' . $this->session->data['ps_google_recaptcha_counter'];
+            } else {
+                $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+            }
+        } else if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_checkbox') {
+            $query['render'] = 'explicit';
+            $query['onload'] = 'onloadCallback' . $this->session->data['ps_google_recaptcha_counter'];
+            $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        } else if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v2_invisible') {
+            if ($this->config->get('captcha_ps_google_recaptcha_badge_position') === 'inline') {
+                $query['onload'] = 'repositionCaptchaBadge' . $this->session->data['ps_google_recaptcha_counter'];
+            } else {
+                $query['badge'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+            }
+        }
+
+        $query['hl'] = $this->language->get('code');
+
+        $args['google_captcha_url'] = 'https://www.google.com/recaptcha/api.js?' . http_build_query($query);
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonLoginBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string &$output = null)
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $json = json_decode($this->response->getOutput(), true);
+
+		$log_status = (bool) $this->config->get('captcha_ps_google_recaptcha_error_log_status') && !empty($this->config->get('captcha_ps_google_recaptcha_log_filename'));
+
+        if ($log_status) {
+            $log = new \Opencart\System\Library\Log($this->config->get('captcha_ps_google_recaptcha_log_filename'));
+        }
+
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        if (!isset($this->request->post['g-recaptcha-response'])) {
+            if ($log_status) {
+                $log->write('reCAPTCHA Error: Missing g-recaptcha-response. IP: ' . $this->request->server['REMOTE_ADDR'] .
+                    ', URL: ' . $this->request->server['REQUEST_URI'] .
+                    ', User-Agent: ' . $this->request->server['HTTP_USER_AGENT']);
+            }
+
+            $json['error'] = $this->language->get('error_missing_input_response');
+
+            return $this->response->setOutput(json_encode($json));
+        }
+
+        $post_data = [
+            'secret' => $this->config->get('captcha_ps_google_recaptcha_secret_key'),
+            'response' => $this->request->post['g-recaptcha-response'],
+        ];
+
+        if ($this->config->get('captcha_ps_google_recaptcha_send_client_ip')) {
+            $post_data['remoteip'] = $this->request->server['REMOTE_ADDR'];
+        }
+
+        if (function_exists('curl_init')) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $response = curl_exec($ch);
+            curl_close($ch);
+        } else if (ini_get('allow_url_fopen')) {
+            $context = stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+                    'content' => http_build_query($post_data)
+                ]
+            ]);
+            $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+        }
+
+        $captcha_response = array_merge(
+            ['success' => false, 'score' => 0.0, 'error-codes' => []],
+            (array) json_decode((string) $response, true)
+        );
+
+        if (JSON_ERROR_NONE !== $json_last_error = json_last_error()) {
+            if ($log_status) {
+                $log->write('JSON Error: ' . json_last_error_msg() . ' (Code: ' . $json_last_error . ')');
+            }
+
+            $json['error'] = $this->language->get('error_bad_request');
+
+            return $this->response->setOutput(json_encode($json));
+        }
+
+        if ($captcha_response['success']) {
+            return;
+        }
+
+        if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
+            $route_to_page = [
+                'product/review.write' => 'review',
+                'information/contact.send' => 'contact',
+                'account/returns.save' => 'returns',
+                'checkout/register.save' => 'register',
+                'account/register.register' => 'register',
+            ];
+            $recaptcha_page = isset($route_to_page[$this->request->get['route']]) ? $route_to_page[$this->request->get['route']] : '';
+
+            $recaptcha_pages = (array) $this->config->get('captcha_ps_google_recaptcha_v3_score_threshold');
+
+            if (!isset($recaptcha_pages[$recaptcha_page])) {
+                $recaptcha_pages[$recaptcha_page] = 0.5; // default value
+            }
+
+            if ($recaptcha_page && $captcha_response['score'] < $recaptcha_pages[$recaptcha_page]) {
+                if ($log_status) {
+                    $log->write('V3 Score threshold error on page ' . $recaptcha_page .
+                        '. Score: ' . $captcha_response['score'] .
+                        ', Threshold: ' . $recaptcha_pages[$recaptcha_page] .
+                        ', IP: ' . $this->request->server['REMOTE_ADDR']);
+                }
+
+                $json['error'] = $this->language->get('error_invalid_input_response');
+
+                return $this->response->setOutput(json_encode($json));
+            }
+        }
+
+        if ($captcha_response['error-codes']) {
+            $errors = [];
+
+            foreach ($captcha_response['error-codes'] as $error_code) {
+                $error_message = $this->language->get('error_' . str_replace('-', '_', $error_code));
+
+                $errors[] = $error_message;
+
+                if ($log_status) {
+                    $log->write('reCAPTCHA Error: ' . $error_code . ' - ' . $error_message . ', IP: ' . $this->request->server['REMOTE_ADDR']);
+                }
+            }
+
+            $json['error'] = implode(', ', $errors);
+
+            return $this->response->setOutput(json_encode($json));
+        }
+
+        if ($log_status) {
+            $log->write('reCAPTCHA Error: ' . $this->language->get('error_captcha') . ', IP: ' . $this->request->server['REMOTE_ADDR']);
+        }
+
+        $json['error'] = $this->language->get('error_bad_request');
+
+        $this->response->setOutput(json_encode($json));
+    }
+    #endregion
 
     public function eventAdminViewSettingSettingBefore(string &$route, array &$args, string &$template): void
     {
