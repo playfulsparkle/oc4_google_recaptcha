@@ -378,6 +378,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['trigger' => 'catalog/view/account/login/before', 'description' => '', 'actionName' => 'eventCatalogViewAccountLoginBefore'],
             ['trigger' => 'catalog/controller/account/login' . $separator . 'login/after', 'description' => '', 'actionName' => 'eventCatalogControllerAccountLoginLoginAfter'],
 
+            ['trigger' => 'catalog/view/account/forgotten/before', 'description' => '', 'actionName' => 'eventCatalogViewAccountForgottenBefore'],
+            ['trigger' => 'catalog/controller/account/forgotten' . $separator . 'confirm/after', 'description' => '', 'actionName' => 'eventCatalogControllerAccountForgottenConfirmAfter'],
+
             // v3 and 2_invisible
             ['trigger' => 'catalog/view/account/register/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],
             ['trigger' => 'catalog/view/account/returns_form/before', 'description' => '', 'actionName' => 'eventGoogleRecaptchaV3AndV2InivisibleButton'],

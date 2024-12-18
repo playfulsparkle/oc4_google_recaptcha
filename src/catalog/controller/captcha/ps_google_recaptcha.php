@@ -192,6 +192,62 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         return $this->language->get('error_bad_request');
     }
 
+    #region Frontend Forgotten Password
+    public function eventCatalogViewAccountForgottenBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        // Captcha
+        $this->load->model('setting/extension');
+
+        $extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+
+        if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('forgotten_password', (array) $this->config->get('config_captcha_page'))) {
+            $args['captcha'] = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code']);
+        } else {
+            $args['captcha'] = '';
+        }
+
+        $args['widget_counter'] = $this->session->data['ps_google_recaptcha_counter'];
+        $args['key_type'] = $this->config->get('captcha_ps_google_recaptcha_key_type');
+        $args['badge_theme'] = $this->config->get('captcha_ps_google_recaptcha_badge_theme');
+        $args['badge_size'] = $this->config->get('captcha_ps_google_recaptcha_badge_size');
+        $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
+        $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountForgottenBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
+    }
+
+    public function eventCatalogControllerAccountForgottenConfirmAfter(string &$route, array &$args, string &$output = null)
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $json = json_decode($this->response->getOutput(), true);
+
+		$this->load->model('setting/extension');
+
+		$extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+
+		if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('forgotten_password', (array)$this->config->get('config_captcha_page'))) {
+			$captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
+
+			if ($captcha) {
+				$json['error']['captcha'] = $captcha;
+			}
+		}
+
+        $this->response->setOutput(json_encode($json));
+    }
+    #endregion
+
     #region Frontend login
     public function eventCatalogViewAccountLoginBefore(string &$route, array &$args, string &$template): void
     {
