@@ -540,8 +540,11 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             $this->session->data['error'] = $this->language->get('error_missing_input_response');
 
+            unset($json['error']);
+
             $json['redirect'] = $this->url->link('common/login', '', true);
 
+            $this->response->addHeader('Content-Type: application/json');
             return $this->response->setOutput(json_encode($json));
         }
 
@@ -593,6 +596,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             $json['redirect'] = $this->url->link('common/login', '', true);
 
+            unset($json['error']);
+
+            $this->response->addHeader('Content-Type: application/json');
             return $this->response->setOutput(json_encode($json));
         }
 
@@ -634,6 +640,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
                 $json['redirect'] = $this->url->link('common/login', '', true);
 
+                unset($json['error']);
+
+                $this->response->addHeader('Content-Type: application/json');
                 return $this->response->setOutput(json_encode($json));
             }
         }
@@ -661,6 +670,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             $json['redirect'] = $this->url->link('common/login', '', true);
 
+            unset($json['error']);
+
+            $this->response->addHeader('Content-Type: application/json');
             return $this->response->setOutput(json_encode($json));
         }
 
@@ -678,6 +690,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $json['redirect'] = $this->url->link('common/login', '', true);
 
+        unset($json['error']);
+
+        $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
     }
     #endregion
