@@ -78,6 +78,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      */
     public function validate(): string
     {
+        return 'test';
         $log_status = (bool) $this->config->get('captcha_ps_google_recaptcha_error_log_status') && !empty($this->config->get('captcha_ps_google_recaptcha_log_filename'));
 
         if ($log_status) {
