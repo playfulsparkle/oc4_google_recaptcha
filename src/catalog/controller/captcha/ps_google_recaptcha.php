@@ -140,10 +140,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return $this->language->get('error_bad_request');
         }
 
-        if ($captcha_response['success']) {
-            return '';
-        }
-
         if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
             $route_to_page = [
                 'product/review.write' => 'review',
@@ -152,7 +148,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 'checkout/register.save' => 'register',
                 'account/register.register' => 'register',
             ];
-            $recaptcha_page = isset($route_to_page[$this->request->get['route']]) ? $route_to_page[$this->request->get['route']] : '';
+            $recaptcha_page = isset($route_to_page[$this->request->get['route']]) ? $route_to_page[$this->request->get['route']] : 'default';
 
             $recaptcha_pages = (array) $this->config->get('captcha_ps_google_recaptcha_v3_score_threshold');
 
@@ -160,7 +156,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                 $recaptcha_pages[$recaptcha_page] = 0.5; // default value
             }
 
-            if ($recaptcha_page && $captcha_response['score'] < $recaptcha_pages[$recaptcha_page]) {
+            if ($captcha_response['success'] && $captcha_response['score'] >= $recaptcha_pages[$recaptcha_page]) {
+                return '';
+            } else {
                 if ($log_status) {
                     $log->write('V3 Score threshold error on page ' . $recaptcha_page .
                         '. Score: ' . $captcha_response['score'] .
@@ -168,7 +166,11 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                         ', IP: ' . $this->request->server['REMOTE_ADDR']);
                 }
 
-                return $this->language->get('error_invalid_input_response');
+                return $this->language->get('error_low_score');
+            }
+        } else {
+            if ($captcha_response['success']) {
+                return '';
             }
         }
 
