@@ -7,6 +7,35 @@ namespace Opencart\Admin\Model\Extension\PsGoogleReCaptcha\Captcha;
  */
 class PsGoogleReCaptcha extends \Opencart\System\Engine\Model
 {
+    public function replaceAdminViewCommonHeaderBefore(array $args): array
+    {
+        $views = [];
+
+        $views[] = [
+            'search' => '</head>',
+            'replace' => '<style{% if ps_css_nonce %} nonce="{{ ps_css_nonce }}"{% endif %}>
+            {% if ps_hide_badge %}
+            .grecaptcha-badge { visibility: hidden; }
+            .row .grecaptcha-badge { visibility: visible; }
+            {% endif %}
+            .text-end > div:has(> iframe) {
+                display: inline-block;
+            }
+            </style>
+            </head>'
+        ];
+
+        $views[] = [
+            'search' => '</head>',
+            'replace' => '
+            <link rel="preconnect" href="https://www.google.com">
+            <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+            </head>'
+        ];
+
+        return $views;
+    }
+
     public function replaceAdminViewCommonLoginBefore(array $args): array
     {
         $views = [];

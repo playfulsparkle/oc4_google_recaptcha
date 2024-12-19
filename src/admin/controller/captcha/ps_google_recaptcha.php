@@ -374,6 +374,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             ['trigger' => 'admin/view/setting/setting/before', 'description' => '', 'actionName' => 'eventAdminViewSettingSettingBefore'],
 
             ['trigger' => 'catalog/view/common/header/before', 'description' => '', 'actionName' => 'eventCatalogViewCommonHeaderBefore'],
+            ['trigger' => 'admin/view/common/header/before', 'description' => '', 'actionName' => 'eventAdminViewCommonHeaderBefore'],
 
             ['trigger' => 'admin/view/common/login/before', 'description' => '', 'actionName' => 'eventAdminViewCommonLoginBefore'],
             ['trigger' => 'admin/controller/common/login' . $separator . 'login/after', 'description' => '', 'actionName' => 'eventAdminControllerCommonLoginLoginAfter'],
@@ -443,6 +444,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
         $data['script_nonce'] = $this->config->get('captcha_ps_google_recaptcha_script_nonce');
         $data['google_captcha_nonce'] = $this->config->get('captcha_ps_google_recaptcha_google_captcha_nonce');
+        $data['hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
 
         $query = [];
 
@@ -471,6 +473,22 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['google_captcha_url'] = 'https://www.google.com/recaptcha/api.js?' . http_build_query($query);
 
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha_widget', $data);
+    }
+
+    public function eventAdminViewCommonHeaderBefore(string &$route, array &$args, string &$template): void
+    {
+        if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
+            return;
+        }
+
+        $args['ps_hide_badge'] = $this->config->get('captcha_ps_google_recaptcha_hide_badge');
+        $args['ps_css_nonce'] = $this->config->get('captcha_ps_google_recaptcha_css_nonce');
+
+        $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+
+        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonHeaderBefore($args);
+
+        $template = $this->replaceViews($route, $template, $headerViews);
     }
 
     #region Admin login
