@@ -504,7 +504,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
-        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha_widget');
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
@@ -541,7 +541,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             $log = new \Opencart\System\Library\Log($this->config->get('captcha_ps_google_recaptcha_log_filename'));
         }
 
-        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
+        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha_widget');
 
         if (!isset($this->request->post['g-recaptcha-response'])) {
             if ($log_status) {
