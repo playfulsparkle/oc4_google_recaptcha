@@ -1,6 +1,7 @@
 <?php
 // Heading
 $_['heading_title']                    = 'Playful Sparkle - Google reCAPTCHA';
+$_['heading_fix']                      = 'Corriger les erreurs courantes';
 $_['heading_getting_started']          = 'Démarrage';
 $_['heading_setup']                    = 'Configuration de Google reCAPTCHA';
 $_['heading_troubleshot']              = 'Dépannage courant';
