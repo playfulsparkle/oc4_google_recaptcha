@@ -108,29 +108,43 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             $post_data['remoteip'] = $this->request->server['REMOTE_ADDR'];
         }
 
+
         if (function_exists('curl_init')) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($post_data));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             $response = curl_exec($ch);
+            $request_error = curl_error($ch);
             curl_close($ch);
         } else if (ini_get('allow_url_fopen')) {
             $context = stream_context_create([
                 'http' => [
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
-                    'content' => http_build_query($post_data)
+                    'timeout' => 30,
+                    'content' => http_build_query($post_data),
+                    'ignore_errors' => true,
                 ]
             ]);
             $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+            $request_error = 'unknown';
         }
 
-        $captcha_response = array_merge(
-            ['success' => false, 'score' => 0.0, 'error-codes' => []],
-            (array) json_decode((string) $response, true)
-        );
+        if ($response === false) {
+            if ($log_status) {
+                $log->write('Request Error: ' . $request_error);
+            }
+
+            return $this->language->get('error_bad_request');
+        }
+
+        $response = json_decode((string) $response, true);
 
         if (JSON_ERROR_NONE !== $json_last_error = json_last_error()) {
             if ($log_status) {
@@ -139,6 +153,15 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
             return $this->language->get('error_bad_request');
         }
+
+        $default_response = [
+            'success' => false,
+            'score' => 0.0,
+            'error-codes' => []
+        ];
+
+        $captcha_response = array_merge($default_response, (array) $response);
+
 
         if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
             $route_to_page = [
@@ -237,17 +260,17 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $json = json_decode($this->response->getOutput(), true);
 
-		$this->load->model('setting/extension');
+        $this->load->model('setting/extension');
 
-		$extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+        $extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
 
-		if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('forgotten_password', (array)$this->config->get('config_captcha_page'))) {
-			$captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
+        if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('forgotten_password', (array) $this->config->get('config_captcha_page'))) {
+            $captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
 
-			if ($captcha) {
-				$json['error']['captcha'] = $captcha;
-			}
-		}
+            if ($captcha) {
+                $json['error']['captcha'] = $captcha;
+            }
+        }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
@@ -294,14 +317,14 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $json = json_decode($this->response->getOutput(), true);
 
-		$this->load->model('setting/extension');
+        $this->load->model('setting/extension');
 
-		$extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
+        $extension_info = $this->model_setting_extension->getExtensionByCode('captcha', $this->config->get('config_captcha'));
 
-		if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('catalog_login', (array)$this->config->get('config_captcha_page'))) {
-			$captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
+        if ($extension_info && $this->config->get('captcha_' . $this->config->get('config_captcha') . '_status') && in_array('catalog_login', (array) $this->config->get('config_captcha_page'))) {
+            $captcha = $this->load->controller('extension/' . $extension_info['extension'] . '/captcha/' . $extension_info['code'] . '.validate');
 
-			if ($captcha) {
+            if ($captcha) {
                 if (isset($json['redirect']) && $this->customer->isLogged()) {
                     $this->customer->logout();
 
@@ -321,9 +344,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
                     unset($this->session->data['customer_token']);
                 }
 
-				$json['error']['captcha'] = $captcha;
-			}
-		}
+                $json['error']['captcha'] = $captcha;
+            }
+        }
 
         $this->response->addHeader('Content-Type: application/json');
         $this->response->setOutput(json_encode($json));
