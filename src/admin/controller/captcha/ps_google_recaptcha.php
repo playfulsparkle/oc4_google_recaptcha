@@ -624,6 +624,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             return $this->response->setOutput(json_encode($json));
         }
 
+        /**
+         * @var array $response
+         */
         $response = json_decode((string) $response, true);
 
         if (JSON_ERROR_NONE !== $json_last_error = json_last_error()) {
@@ -653,7 +656,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             'error-codes' => []
         ];
 
-        $captcha_response = array_merge($default_response, (array) $response);
+        $captcha_response = array_merge($default_response, $response);
 
 
         if ($this->config->get('captcha_ps_google_recaptcha_key_type') === 'v3') {
