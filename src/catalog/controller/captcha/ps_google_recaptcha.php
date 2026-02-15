@@ -121,7 +121,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
             $response = curl_exec($ch);
             $request_error = curl_error($ch);
-            curl_close($ch);
+            if ($ch && PHP_VERSION_ID < 80500) {
+                curl_close($ch);
+            }
         } else if (ini_get('allow_url_fopen')) {
             $context = stream_context_create([
                 'http' => [

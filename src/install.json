@@ -3,7 +3,7 @@
     "description": "Enhance store security with Google reCAPTCHA, blocking spam and abuse while offering customizable options and seamless integration with your design.",
     "code": "ps_google_recaptcha",
     "license": "GPL",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "author": "Playful Sparkle",
     "link": "https://github.com/playfulsparkle/oc4_recaptcha.git"
   }
