@@ -1,7 +1,6 @@
 <?php
 // Heading
 $_['heading_title']                    = 'Playful Sparkle - Google reCAPTCHA';
-$_['heading_fix']                      = 'Исправление общих ошибок';
 $_['heading_getting_started']          = 'Начало работы';
 $_['heading_setup']                    = 'Настройка Google reCAPTCHA';
 $_['heading_troubleshot']              = 'Типичные проблемы';
@@ -68,7 +67,6 @@ $_['entry_enable_error_log']           = 'Включить журнал ошиб
 // Button
 $_['button_download']                  = 'Скачать';
 $_['button_clear']                     = 'Очистить';
-$_['button_fix_event_handler']         = 'Исправить обработчик событий';
 
 // Help
 $_['help_copy']                        = 'Копировать URL';

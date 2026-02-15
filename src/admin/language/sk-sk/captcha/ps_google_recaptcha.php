@@ -1,7 +1,6 @@
 <?php
 // Heading
 $_['heading_title']                    = 'Playful Sparkle - Google reCAPTCHA';
-$_['heading_fix']                      = 'Oprava bežných chýb';
 $_['heading_getting_started']          = 'Začíname';
 $_['heading_setup']                    = 'Nastavenie Google reCAPTCHA';
 $_['heading_troubleshot']              = 'Bežné problémy';
@@ -62,7 +61,6 @@ $_['entry_google_captcha_nonce']       = 'Nonce Google reCAPTCHA API skriptu';
 $_['entry_css_nonce']                  = 'Nonce štýlu CSS značky';
 $_['entry_log_filename']               = 'Názov súboru protokolu pre validáciu';
 $_['entry_send_client_ip']             = 'Odoslať IP adresu klienta';
-$_['button_fix_event_handler']         = 'Opraviť spracovateľa udalostí';
 
 // Button
 $_['button_download']                  = 'Stiahnuť';

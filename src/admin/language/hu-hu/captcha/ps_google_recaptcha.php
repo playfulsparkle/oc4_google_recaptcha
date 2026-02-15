@@ -1,7 +1,6 @@
 <?php
 // Heading
 $_['heading_title']                    = 'Playful Sparkle - Google reCAPTCHA';
-$_['heading_fix']                      = 'Gyakori hibák javítása';
 $_['heading_getting_started']          = 'Kezdő lépések';
 $_['heading_setup']                    = 'Google reCAPTCHA beállítása';
 $_['heading_troubleshot']              = 'Gyakori hibakeresési lépések';
@@ -68,7 +67,6 @@ $_['entry_enable_error_log']           = 'Hibák naplózásának engedélyezése
 // Button
 $_['button_download']                  = 'Letöltés';
 $_['button_clear']                     = 'Törlés';
-$_['button_fix_event_handler']         = 'Eseménykezelő javítása';
 
 // Help
 $_['help_copy']                        = 'URL másolása';

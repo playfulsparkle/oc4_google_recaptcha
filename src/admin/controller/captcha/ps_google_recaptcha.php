@@ -55,7 +55,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $separator = version_compare(VERSION, '4.0.2.0', '>=') ? '.' : '|';
 
         $data['save'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'save', 'user_token=' . $this->session->data['user_token']);
-        $data['fix_event_handler'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'fixEventHandler', 'user_token=' . $this->session->data['user_token']);
         $data['back'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=captcha');
 
         $data['captcha_ps_google_recaptcha_status'] = $this->config->get('captcha_ps_google_recaptcha_status');
@@ -333,32 +332,6 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
         );
-    }
-
-    public function fixEventHandler(): void
-    {
-        $this->load->language('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
-
-        $json = [];
-
-        if (!$this->user->hasPermission('modify', 'extension/ps_google_recaptcha/captcha/ps_google_recaptcha')) {
-            $json['error'] = $this->language->get('error_permission');
-        }
-
-        if (!$json) {
-            $this->load->model('setting/event');
-
-            $this->_unregisterEvents();
-
-            if ($this->_registerEvents() > 0) {
-                $json['success'] = $this->language->get('text_success');
-            } else {
-                $json['error'] = $this->language->get('error_event');
-            }
-        }
-
-        $this->response->addHeader('Content-Type: application/json');
-        $this->response->setOutput(json_encode($json));
     }
 
     private function _unregisterEvents(): void
