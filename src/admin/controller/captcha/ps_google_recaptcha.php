@@ -297,7 +297,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $json = [];
 
-        if (!$this->user->hasPermission('modify', 'tool/log')) {
+        if (!$this->user->hasPermission('modify', 'extension/ps_google_recaptcha/captcha/ps_google_recaptcha')) {
             $json['error'] = $this->language->get('error_permission');
         }
 
