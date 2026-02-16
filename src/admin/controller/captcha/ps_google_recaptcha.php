@@ -230,34 +230,30 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
     public function install(): void
     {
-        if ($this->user->hasPermission('modify', 'extension/captcha')) {
-            $this->load->model('setting/setting');
+        $this->load->model('setting/setting');
 
-            $data = [
-                'captcha_ps_google_recaptcha_key_type' => 'v2_checkbox',
-                'captcha_ps_google_recaptcha_script_nonce' => $this->generateGuid(),
-                'captcha_ps_google_recaptcha_google_captcha_nonce' => $this->generateGuid(),
-                'captcha_ps_google_recaptcha_css_nonce' => $this->generateGuid(),
-                'captcha_ps_google_recaptcha_badge_theme' => 'light',
-                'captcha_ps_google_recaptcha_badge_position' => 'bottomright',
-                'captcha_ps_google_recaptcha_log_filename' => 'ps_google_recaptcha.log',
-            ];
+        $data = [
+            'captcha_ps_google_recaptcha_key_type' => 'v2_checkbox',
+            'captcha_ps_google_recaptcha_script_nonce' => $this->generateGuid(),
+            'captcha_ps_google_recaptcha_google_captcha_nonce' => $this->generateGuid(),
+            'captcha_ps_google_recaptcha_css_nonce' => $this->generateGuid(),
+            'captcha_ps_google_recaptcha_badge_theme' => 'light',
+            'captcha_ps_google_recaptcha_badge_position' => 'bottomright',
+            'captcha_ps_google_recaptcha_log_filename' => 'ps_google_recaptcha.log',
+        ];
 
-            $this->model_setting_setting->editSetting('captcha_ps_google_recaptcha', $data);
+        $this->model_setting_setting->editSetting('captcha_ps_google_recaptcha', $data);
 
-            $this->load->model('setting/event');
+        $this->load->model('setting/event');
 
-            $this->_registerEvents();
-        }
+        $this->_registerEvents();
     }
 
     public function uninstall(): void
     {
-        if ($this->user->hasPermission('modify', 'extension/captcha')) {
-            $this->load->model('setting/event');
+        $this->load->model('setting/event');
 
-            $this->_unregisterEvents();
-        }
+        $this->_unregisterEvents();
     }
 
     public function download(): void
@@ -496,7 +492,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string &$output = null)
+    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;

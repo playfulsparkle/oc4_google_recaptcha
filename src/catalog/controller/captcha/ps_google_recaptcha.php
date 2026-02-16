@@ -257,7 +257,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventCatalogControllerAccountForgottenConfirmAfter(string &$route, array &$args, string &$output = null)
+    public function eventCatalogControllerAccountForgottenConfirmAfter(string &$route, array &$args, string &$output): void
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -314,7 +314,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventCatalogControllerAccountLoginLoginAfter(string &$route, array &$args, string &$output = null)
+    public function eventCatalogControllerAccountLoginLoginAfter(string &$route, array &$args, string &$output): void
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
