@@ -15,7 +15,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     /**
      * @var string The documentation URL for the extension.
      */
-    const EXTENSION_DOC = 'https://playfulsparkle.com/en-us/resources/downloads/';
+    const EXTENSION_DOC = 'https://github.com/playfulsparkle/oc4_recaptcha.git';
 
     /**
      * @return void
