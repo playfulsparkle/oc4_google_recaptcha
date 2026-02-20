@@ -99,47 +99,47 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $data['captcha_pages'] = [];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_admin_login'),
+            'text' => $this->language->get('text_captcha_page_admin_login'),
             'value' => 'admin_login'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_catalog_login'),
+            'text' => $this->language->get('text_captcha_page_catalog_login'),
             'value' => 'catalog_login'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_register'),
+            'text' => $this->language->get('text_captcha_page_register'),
             'value' => 'register'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_forgotten_password'),
+            'text' => $this->language->get('text_captcha_page_forgotten_password'),
             'value' => 'forgotten_password'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_guest'),
+            'text' => $this->language->get('text_captcha_page_guest'),
             'value' => 'guest'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_review'),
+            'text' => $this->language->get('text_captcha_page_review'),
             'value' => 'review'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_comment'),
+            'text' => $this->language->get('text_captcha_page_comment'),
             'value' => 'comment'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_return'),
+            'text' => $this->language->get('text_captcha_page_return'),
             'value' => 'returns'
         ];
 
         $data['captcha_pages'][] = [
-            'text' => $this->language->get('text_contact'),
+            'text' => $this->language->get('text_captcha_page_contact'),
             'value' => 'contact'
         ];
 
