@@ -500,7 +500,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $template = $this->replaceViews($route, $template, $headerViews);
     }
 
-    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string &$output)
+    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string|null &$output = null)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -563,6 +563,12 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+            if (
+                defined('CURLSSLOPT_NATIVE_CA')
+                && version_compare(curl_version()['version'], '7.71', '>=')
+            ) {
+                curl_setopt($ch, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NATIVE_CA);
+            }
             $response = curl_exec($ch);
             $request_error = curl_error($ch);
             if ($ch && PHP_VERSION_ID < 80500) {
