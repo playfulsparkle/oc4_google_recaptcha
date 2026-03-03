@@ -751,9 +751,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $args['text_admin_login'] = $this->language->get('text_admin_login');
-        $args['text_catalog_login'] = $this->language->get('text_catalog_login');
-        $args['text_forgotten_password'] = $this->language->get('text_forgotten_password');
+        $args['text_captcha_page_admin_login'] = $this->language->get('text_captcha_page_admin_login');
+        $args['text_captcha_page_catalog_login'] = $this->language->get('text_captcha_page_catalog_login');
+        $args['text_captcha_page_forgotten_password'] = $this->language->get('text_captcha_page_forgotten_password');
 
         $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewSettingSettingBefore($args);
 
