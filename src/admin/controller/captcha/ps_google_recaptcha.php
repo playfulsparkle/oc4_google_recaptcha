@@ -143,9 +143,9 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             'value' => 'contact'
         ];
 
-        $data['error_log_output'] = '';
-        $data['error_log_download'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'download', 'user_token=' . $this->session->data['user_token']);
-        $data['error_log_clear'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'clear', 'user_token=' . $this->session->data['user_token']);
+        $data['log_content'] = '';
+        $data['download_log'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'download', 'user_token=' . $this->session->data['user_token']);
+        $data['clear_log'] = $this->url->link('extension/ps_google_recaptcha/captcha/ps_google_recaptcha' . $separator . 'clear', 'user_token=' . $this->session->data['user_token']);
 
         if ($data['captcha_ps_google_recaptcha_error_log_status']) {
             $error_log_filename = DIR_LOGS . $data['captcha_ps_google_recaptcha_log_filename'];
@@ -153,7 +153,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
             if (is_readable($error_log_filename)) {
                 $error_log_handle = fopen($error_log_filename, 'r+');
 
-                $data['error_log_output'] = fread($error_log_handle, 3145728);
+                $data['log_content'] = fread($error_log_handle, 3145728);
 
                 fclose($error_log_handle);
             }
