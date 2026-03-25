@@ -232,7 +232,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     }
 
     #region Frontend Forgotten Password
-    public function eventCatalogViewAccountForgottenBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/account/forgotten/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewAccountForgottenBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -258,12 +267,22 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountForgottenBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountForgottenBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventCatalogControllerAccountForgottenConfirmAfter(string &$route, array &$args, string|null &$output = null): void
+    /**
+     * Event: catalog/controller/account/forgotten.confirm/after
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogControllerAccountForgottenConfirmAfter(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -289,7 +308,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     #endregion
 
     #region Frontend login
-    public function eventCatalogViewAccountLoginBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/account/login/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewAccountLoginBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -315,12 +343,23 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountLoginBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewAccountLoginBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventCatalogControllerAccountLoginLoginAfter(string &$route, array &$args, string|null &$output = null): void
+    /**
+     * Event: catalog/controller/account/login.login/after
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogControllerAccountLoginLoginAfter(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -364,7 +403,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     }
     #endregion
 
-    public function eventCatalogViewCommonHeaderBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/common/header/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewCommonHeaderBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -375,12 +423,27 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonHeaderBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCommonHeaderBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventGoogleRecaptchaV3AndV2InivisibleButton(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/account/register/before,
+     * catalog/view/account/returns_form/before,
+     * catalog/view/checkout/register/before,
+     * catalog/view/information/contact/before,
+     * catalog/view/product/review/before,
+     * catalog/view/cms/comment/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventGoogleRecaptchaV3AndV2InivisibleButton(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -396,12 +459,22 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGoogleRecaptchaV3AndV2InivisibleButton($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceGoogleRecaptchaV3AndV2InivisibleButton($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventCatalogViewCheckoutRegisterBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/checkout/register/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewCheckoutRegisterBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -409,12 +482,22 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCheckoutRegisterBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCheckoutRegisterBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventCatalogViewProductReviewBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/product/review/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewProductReviewBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -422,12 +505,22 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewProductReviewBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewProductReviewBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventCatalogViewCmsCommentBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: catalog/view/cms/comment/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventCatalogViewCmsCommentBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -435,9 +528,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCmsCommentBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceCatalogViewCmsCommentBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
     /**
@@ -621,7 +715,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      * If positions are specified, the method performs replacements only at those positions.
      *
      * @param string $route The route associated with the template.
-     * @param string $template The name of the template to be processed.
+     * @param string|null $template The name of the template to be processed.
      * @param array $views An array of associative arrays where each associative array contains:
      *                     - string 'search': The string to search for in the template.
      *                     - string 'replace': The string to replace the 'search' string with.
@@ -631,8 +725,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      *
      * @return mixed The modified template content after performing the replacements.
      */
-    protected function replaceViews(string $route, string $template, array $views): mixed
+    protected function replaceViews(string $route, string|null $template, array $views): mixed
     {
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        if (empty($views)) {
+            return $this->getTemplateBuffer($route, $template);
+        }
+
         $output = $this->getTemplateBuffer($route, $template);
 
         foreach ($views as $view) {

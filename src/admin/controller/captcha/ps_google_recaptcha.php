@@ -452,7 +452,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         return $this->load->view('extension/ps_google_recaptcha/captcha/ps_google_recaptcha_widget', $data);
     }
 
-    public function eventAdminViewCommonHeaderBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: admin/view/common/header/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventAdminViewCommonHeaderBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -463,13 +472,23 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
 
         $this->load->model('extension/ps_google_recaptcha/captcha/ps_google_recaptcha');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonHeaderBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonHeaderBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
     #region Admin login
-    public function eventAdminViewCommonLoginBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: admin/view/common/login/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventAdminViewCommonLoginBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -495,12 +514,23 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['badge_position'] = $this->config->get('captcha_ps_google_recaptcha_badge_position');
         $args['site_key'] = $this->config->get('captcha_ps_google_recaptcha_site_key');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonLoginBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewCommonLoginBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
-    public function eventAdminControllerCommonLoginLoginAfter(string &$route, array &$args, string|null &$output = null)
+    /**
+     * Event: admin/controller/common/login.login/after
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventAdminControllerCommonLoginLoginAfter(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -741,7 +771,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
     }
     #endregion
 
-    public function eventAdminViewSettingSettingBefore(string &$route, array &$args, string &$template): void
+    /**
+     * Event: admin/view/setting/setting/before
+     *
+     * @param string $route
+     * @param array $args
+     * @param string $output
+     *
+     * @return void
+     */
+    public function eventAdminViewSettingSettingBefore(&$route, &$args, &$output)
     {
         if (!$this->config->get('captcha_ps_google_recaptcha_status')) {
             return;
@@ -755,9 +794,10 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
         $args['text_captcha_page_catalog_login'] = $this->language->get('text_captcha_page_catalog_login');
         $args['text_captcha_page_forgotten_password'] = $this->language->get('text_captcha_page_forgotten_password');
 
-        $headerViews = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewSettingSettingBefore($args);
 
-        $template = $this->replaceViews($route, $template, $headerViews);
+        $views = $this->model_extension_ps_google_recaptcha_captcha_ps_google_recaptcha->replaceAdminViewSettingSettingBefore($args);
+
+        $output = $this->replaceViews($route, $output, $views);
     }
 
     /**
@@ -930,7 +970,7 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      * If positions are specified, the method performs replacements only at those positions.
      *
      * @param string $route The route associated with the template.
-     * @param string $template The name of the template to be processed.
+     * @param string|null $template The name of the template to be processed.
      * @param array $views An array of associative arrays where each associative array contains:
      *                     - string 'search': The string to search for in the template.
      *                     - string 'replace': The string to replace the 'search' string with.
@@ -940,8 +980,16 @@ class PsGoogleReCaptcha extends \Opencart\System\Engine\Controller
      *
      * @return mixed The modified template content after performing the replacements.
      */
-    protected function replaceViews(string $route, string $template, array $views): mixed
+    protected function replaceViews(string $route, string|null $template, array $views): mixed
     {
+        if (is_null($template)) {
+            $template = '';
+        }
+
+        if (empty($views)) {
+            return $this->getTemplateBuffer($route, $template);
+        }
+
         $output = $this->getTemplateBuffer($route, $template);
 
         foreach ($views as $view) {
